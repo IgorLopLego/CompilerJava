@@ -12,16 +12,25 @@ public enum TokenKind {
     SWITCH("switch"),
     TERNARY("ternary"),
     EXEFUNC("exeFunc"),
-    ANNOUNCE("announce"),
+    SCREAM("scream"),
     FOLLOWING("following"),
 
-    COMMA("."),
+    COMMA(","),
     DOLLAR("$"),
     LEFTPARAN( "[" ),
     RIGHTPARAN( "]" ),
-    RETURN("<="),
+    RETURN("<-"),
     QUESTION("?"),
-    SEMICOLUMN(":");
+    SEMICOLUMN(":"),
+
+    LESS("<"),
+    LESSOREQUAL("<="),
+    MORE(">"),
+    MOREOREQUAL(">="),
+
+    NULLTERMINANT;
+
+
 
 
 
