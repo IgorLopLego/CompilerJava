@@ -44,6 +44,15 @@ public class Scanner {
         else if(isDigit(currentChar) || currentChar == '-')
         {
             proceedToNextCharacter();
+            if(currentSpelling.toString().equals("-") && currentChar == ' ')
+            {
+                return EXCEPTION;
+            }
+            else if(!currentSpelling.toString().equals("-") && currentChar == ' ')
+            {
+                return INTEGERLITERAL;
+            }
+
             if(!isDigit(currentChar))
             {
                 return EXCEPTION;
@@ -128,62 +137,6 @@ public class Scanner {
         }
 
     }
-
-//    private TokenKind scanToken()
-//    {
-//        if( isLetter( currentChar ) || isAllowedCharacter(currentChar) ) {
-//            proceedToNextCharacter();
-//            while( isLetter( currentChar ) || isDigit( currentChar ) || isAllowedCharacter(currentChar))
-//            {
-//                proceedToNextCharacter();
-//            }
-//            return IDENTIFIER;
-//        }
-//        else if( isDigit( currentChar ) ) {
-//            proceedToNextCharacter();
-//            while( isDigit( currentChar ) ) {
-//                proceedToNextCharacter();
-//            }
-//
-//            return INTEGERLITERAL;
-//
-//        } switch( currentChar ) {
-//        case '+': case '-': case '*': case '/': case '%':
-//            proceedToNextCharacter();
-//            return OPERATOR;
-//
-//        case ':':
-//            proceedToNextCharacter();
-//            if( currentChar == '=' ) {
-//                proceedToNextCharacter();
-//                return OPERATOR;
-//            } else
-//                return ERROR;
-//
-//        case ',':
-//            proceedToNextCharacter();
-//            return COMMA;
-//
-//        case ';':
-//            proceedToNextCharacter();
-//            return SEMICOLON;
-//
-//        case '(':
-//            proceedToNextCharacter();
-//            return LEFTPARAN;
-//
-//        case ')':
-//            proceedToNextCharacter();
-//            return RIGHTPARAN;
-//
-//        case SourceFile.EOT:
-//            return EOT;
-//
-//        default:
-//            proceedToNextCharacter();
-//            return ERROR;
-//    }
-//    }
 
     private boolean isLetter(char ch) {
         return ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z';
