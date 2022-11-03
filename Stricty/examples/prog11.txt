@@ -1,9 +1,0 @@
-declare
-   var x;
-do
-   x := 10;
-   while x do
-      say x;
-      x := x - 1;
-   od;
-od
