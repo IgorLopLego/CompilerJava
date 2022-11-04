@@ -125,6 +125,22 @@ public class Scanner {
                     return MOREOREQUAL;
                 }
                 return MORE;
+
+            case '`':
+                proceedToNextCharacter();
+                while(true)
+                {
+                    if(currentChar == '\0')
+                    {
+                        return EXCEPTION;
+                    }
+                    else if(currentChar == '`')
+                    {
+                        proceedToNextCharacter();
+                        return  STRINGLITERAL;
+                    }
+                    proceedToNextCharacter();
+                }
             case '\0':
                 return NULLTERMINANT;
 

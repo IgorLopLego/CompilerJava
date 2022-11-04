@@ -3,6 +3,7 @@ package scanner;
 public enum TokenKind {
     IDENTIFIER,
     INTEGERLITERAL,
+    STRINGLITERAL,
     OPERATOR,
     EXCEPTION,
 
@@ -16,6 +17,8 @@ public enum TokenKind {
     SHOVE("shove"),
     FOLLOWING("following"),
     BOOL("boolean"),
+    TRUE("true"),
+    FALSE("false"),
     STRING("string"),
     NUMBER("number"),
     SEQUENCE("sequence"),
