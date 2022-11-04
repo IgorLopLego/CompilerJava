@@ -13,10 +13,12 @@ public enum TokenKind {
     TERNARY("ternary"),
     EXEFUNC("exeFunc"),
     SCREAM("scream"),
+    SHOVE("shove"),
     FOLLOWING("following"),
     BOOL("boolean"),
     STRING("string"),
     NUMBER("number"),
+    SEQUENCE("sequence"),
     COMMA(","),
     DOLLAR("$"),
     LEFTPARAN( "[" ),
@@ -24,6 +26,7 @@ public enum TokenKind {
     RETURN("<-"),
     QUESTION("?"),
     SEMICOLUMN(":"),
+
 
     LESS("<"),
     LESSOREQUAL("<="),
