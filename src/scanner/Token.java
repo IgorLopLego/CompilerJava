@@ -5,10 +5,9 @@ import static scanner.TokenKind.OPERATOR;
 public class Token {
     private TokenKind kind;
     private String spelling;
-    private static final String assignOperator = "#";
     private static final String additionOperator[] = {"add", "subtract"};
     private static final String multiplicationOperators[] = {"multiplication", "division", "module"};
-    private static final TokenKind[] KEYWORDS = {TokenKind.DOLLAR, TokenKind.START, TokenKind.END, TokenKind.FOR, TokenKind.SWITCH, TokenKind.TERNARY, TokenKind.EXEFUNC, TokenKind.SCREAM, TokenKind.FOLLOWING, TokenKind.BOOL, TokenKind.STRING, TokenKind.NUMBER, TokenKind.SHOVE, TokenKind.SEQUENCE};
+    private static final TokenKind[] KEYWORDS = {TokenKind.DOLLAR, TokenKind.START, TokenKind.END, TokenKind.FOR, TokenKind.SWITCH, TokenKind.TERNARY, TokenKind.EXEFUNC, TokenKind.SCREAM, TokenKind.FOLLOWING, TokenKind.BOOL, TokenKind.STRING, TokenKind.NUMBER, TokenKind.SHOVE, TokenKind.SEQUENCE, TokenKind.TRUE, TokenKind.FALSE};
 
 
     public Token(TokenKind kind, String spelling)
@@ -31,7 +30,7 @@ public class Token {
     }
 
     private boolean IsOperator() {
-         return assignOperator.equals(spelling) || containsOperator(spelling, additionOperator) || containsOperator(spelling, multiplicationOperators);
+         return  containsOperator(spelling, additionOperator) || containsOperator(spelling, multiplicationOperators);
     }
 
     private TokenKind IsAKeyword(){
@@ -41,13 +40,6 @@ public class Token {
             }
         }
         return null;
-    }
-
-    public boolean isAssignOperator() {
-        if (kind == OPERATOR) {
-            return spelling.equals(assignOperator);
-        }
-        return false;
     }
 
     public boolean isAddOperator()

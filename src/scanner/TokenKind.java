@@ -22,6 +22,7 @@ public enum TokenKind {
     STRING("string"),
     NUMBER("number"),
     SEQUENCE("sequence"),
+    ASSIGN("#"),
     COMMA(","),
     DOLLAR("$"),
     LEFTPARAN( "[" ),
@@ -35,6 +36,7 @@ public enum TokenKind {
     LESSOREQUAL("<="),
     MORE(">"),
     MOREOREQUAL(">="),
+    EQUALS("=="),
 
     NULLTERMINANT;
 
