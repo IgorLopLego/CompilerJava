@@ -8,7 +8,7 @@ public class Token {
     private static final String assignOperator = "#";
     private static final String additionOperator[] = {"add", "subtract"};
     private static final String multiplicationOperators[] = {"multiplication", "division", "module"};
-    private static final TokenKind[] KEYWORDS = {TokenKind.START, TokenKind.END, TokenKind.FOR, TokenKind.SWITCH, TokenKind.TERNARY, TokenKind.EXEFUNC, TokenKind.SCREAM, TokenKind.FOLLOWING};
+    private static final TokenKind[] KEYWORDS = {TokenKind.DOLLAR, TokenKind.START, TokenKind.END, TokenKind.FOR, TokenKind.SWITCH, TokenKind.TERNARY, TokenKind.EXEFUNC, TokenKind.SCREAM, TokenKind.FOLLOWING, TokenKind.BOOL, TokenKind.STRING, TokenKind.NUMBER};
 
 
     public Token(TokenKind kind, String spelling)

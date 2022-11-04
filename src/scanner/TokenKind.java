@@ -14,7 +14,9 @@ public enum TokenKind {
     EXEFUNC("exeFunc"),
     SCREAM("scream"),
     FOLLOWING("following"),
-
+    BOOL("boolean"),
+    STRING("string"),
+    NUMBER("number"),
     COMMA(","),
     DOLLAR("$"),
     LEFTPARAN( "[" ),
