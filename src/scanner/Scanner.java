@@ -41,44 +41,27 @@ public class Scanner {
             }
             return IDENTIFIER;
         }
-        else if(isDigit(currentChar) || currentChar == '-')
+        else if (isDigit(currentChar))
         {
             proceedToNextCharacter();
-            if(currentSpelling.toString().equals("-") && currentChar == ' ')
-            {
-                return EXCEPTION;
-            }
-            else if(!currentSpelling.toString().equals("-") && currentChar == ' ')
-            {
-                return INTEGERLITERAL;
-            }
+            return checkForFloatingTokenKind();
+        }
+        else if(currentChar == '-')
+        {
+            proceedToNextCharacter();
             if(!isDigit(currentChar))
             {
                 return EXCEPTION;
             }
-            proceedToNextCharacter();
-            boolean isDotUsedAlready = false;
-            while (isDigit(currentChar) || currentChar == '.')
+            else
             {
-                if(currentChar == '.')
-                {
-                    if(isDotUsedAlready)
-                    {
-                        return EXCEPTION;
-                    }
-                    isDotUsedAlready = true;
-                }
-                proceedToNextCharacter();
+                return checkForFloatingTokenKind();
             }
-            if(currentSpelling.toString().endsWith("."))
-            {
-                return EXCEPTION;
-            }
-            return INTEGERLITERAL;
-
-
         }
         switch (currentChar) {
+            case '#':
+                proceedToNextCharacter();
+                return ASSIGN;
             case ',':
                 proceedToNextCharacter();
                 return COMMA;
@@ -126,6 +109,15 @@ public class Scanner {
                 }
                 return MORE;
 
+            case '=':
+                proceedToNextCharacter();
+                if(currentChar == '=')
+                {
+                    proceedToNextCharacter();
+                    return EQUALS;
+                }
+                return EXCEPTION;
+
             case '`':
                 proceedToNextCharacter();
                 while(true)
@@ -150,6 +142,27 @@ public class Scanner {
 
 
         }
+    }
+
+    private TokenKind checkForFloatingTokenKind() {
+        boolean isDotUsedAlready = false;
+        while (isDigit(currentChar) || currentChar == '.')
+        {
+            if(currentChar == '.')
+            {
+                if(isDotUsedAlready)
+                {
+                    return EXCEPTION;
+                }
+                isDotUsedAlready = true;
+            }
+            proceedToNextCharacter();
+        }
+        if(currentSpelling.toString().endsWith("."))
+        {
+            return EXCEPTION;
+        }
+        return INTEGERLITERAL;
     }
 
     private boolean isLetter(char ch) {
