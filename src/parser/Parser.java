@@ -4,6 +4,8 @@ import scanner.Scanner;
 import scanner.Token;
 import scanner.TokenKind;
 
+import java.util.Currency;
+
 import static scanner.TokenKind.*;
 
 public class Parser {
@@ -30,13 +32,56 @@ public class Parser {
             }
             if(isAStatement())
             {
-
+                while (isAStatement())
+                {
+                    parseStatement();
+                }
             }
         }
         accept(END);
         if( currentToken.getKind() != NULLTERMINANT) {
             System.out.println("Tokens found after end of program");
         }
+    }
+
+    private void parseStatement(){
+       switch (currentToken.getKind())
+       {
+           case SCREAM:
+               accept(SCREAM);
+               accept(LEFTPARAN);
+               accept(STRINGLITERAL);
+               accept(RIGHTPARAN);
+               accept(DOLLAR);
+               break;
+           case FOR:
+               accept(FOR);
+               accept(LEFTPARAN);
+               accept(NUMBER);
+               accept(IDENTIFIER);
+               accept(ASSIGN);
+               accept(INTEGERLITERAL);
+               accept(SEMICOLUMN);
+               accept(IDENTIFIER);
+               acceptComparison();
+               accept(INTEGERLITERAL);
+               accept(SEMICOLUMN);
+               accept(IDENTIFIER);
+               accept(OPERATOR);
+               acceptIdentifierOrNumber();
+               accept(RIGHTPARAN);
+               accept(LEFTPARAN);
+               accept(RIGHTPARAN);
+               break;
+
+
+           case SHOVE:
+               accept(SHOVE);
+               accept(LEFTPARAN);
+               accept(RIGHTPARAN);
+               break;
+
+       }
     }
 
     private void parseDeclaration(){
@@ -94,6 +139,7 @@ public class Parser {
                 break;
             case EXEFUNC:
                 accept(EXEFUNC);
+                acceptReturnFuncReturnType();
                 accept(IDENTIFIER);
                 accept(LEFTPARAN);
                 // to describe all possible solutions of the function
@@ -104,42 +150,53 @@ public class Parser {
         }
     }
 
-    private void continueEnumeration(TokenKind tokenKind){
+    private void acceptIdentifierOrNumber(){
+       if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == INTEGERLITERAL)
+       {
+           accept(currentToken.getKind());
+       }
+       else {
+           accept(EXCEPTION);
+       }
+    }
+
+    private void acceptComparison()
+    {
+        if(currentToken.getKind() == LESS || currentToken.getKind() == LESSOREQUAL || currentToken.getKind() == EQUALS || currentToken.getKind() == MORE || currentToken.getKind() == MOREOREQUAL)
+        {
+            accept(currentToken.getKind());
+        }
+        else {
+            accept(EXCEPTION);
+        }
+    }
+
+    private void acceptReturnFuncReturnType()
+    {
+        if(currentToken.getKind() == VOID || currentToken.getKind() == BOOL || currentToken.getKind() == STRING || currentToken.getKind() == NUMBER)
+        {
+            accept(currentToken.getKind());
+        }
+        else {
+            accept(EXCEPTION);
+        }
+
+    }
+
+    private void continueEnumeration(TokenKind tokenKind) {
         accept(IDENTIFIER);
         accept(ASSIGN);
-        if(tokenKind == NUMBER)
-        {
+        if (tokenKind == NUMBER) {
             accept(INTEGERLITERAL);
-        }
-        else if(tokenKind == STRING)
-        {
+        } else if (tokenKind == STRING) {
             accept(STRINGLITERAL);
-        }
-        else if(tokenKind == BOOL)
-        {
+        } else if (tokenKind == BOOL) {
             accept(BOOLLITERAL);
         }
     }
 
-
-    private void parseDeclarations(){
-        while(isADeclaration())
-        {
-            switch (currentToken.getKind())
-            {
-                case NUMBER:
-                    accept(NUMBER);
-                    accept(IDENTIFIER);
-
-                    break;
-            }
-        }
-    }
-
-
-
     public boolean isAStatement(){
-        return isAnExpression() || currentToken.getKind() == SWITCH || currentToken.getKind() == FOR || currentToken.getKind() == TERNARY || currentToken.getKind() == SCREAM || currentToken.getKind() == SHOVE;
+        return isAnExpression() || currentToken.getKind() == SWITCH || currentToken.getKind() == FOR || currentToken.getKind() == SCREAM || currentToken.getKind() == SHOVE;
     }
 
     private boolean isADeclaration() {
