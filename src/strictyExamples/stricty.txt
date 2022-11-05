@@ -1,5 +1,5 @@
 start
-string someString # `halloween` $
-number negativeIgor # -99.9 $
-boolean igor # true $
+number negativeIgor # -99.9, positiveIgor # 99.9 $
+boolean isHere # true, isNotHere #false, anotherOne # true $
+string someString # `halloween`$
 end
