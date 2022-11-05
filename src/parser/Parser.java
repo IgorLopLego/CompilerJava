@@ -73,13 +73,23 @@ public class Parser {
                accept(LEFTPARAN);
                accept(RIGHTPARAN);
                break;
-
-
            case SHOVE:
                accept(SHOVE);
                accept(LEFTPARAN);
                accept(RIGHTPARAN);
+               accept(DOLLAR);
                break;
+           case SWITCH:
+               accept(SWITCH);
+               accept(LEFTPARAN);
+               acceptNumberOrBooleanOrString();
+               accept(RIGHTPARAN);
+//               while(currentToken.getKind() != CASE)
+//               {
+//                   acceptCase();
+//               }
+
+
 
        }
     }
@@ -147,6 +157,22 @@ public class Parser {
                 accept(DOLLAR);
                 accept(RIGHTPARAN);
                 break;
+        }
+    }
+
+    private void acceptCase(){
+        accept(CASE);
+        acceptNumberOrBooleanOrString();
+        accept(SEMICOLUMN);
+    }
+
+    private void acceptNumberOrBooleanOrString(){
+        if(currentToken.getKind() == INTEGERLITERAL || currentToken.getKind() == STRINGLITERAL || currentToken.getKind() == BOOLLITERAL)
+        {
+            accept(currentToken.getKind());
+        }
+        else{
+            accept(EXCEPTION);
         }
     }
 

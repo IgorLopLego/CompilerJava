@@ -29,6 +29,9 @@ public enum TokenKind {
     RETURN("<-"),
     QUESTION("?"),
     SEMICOLUMN(":"),
+    CASE("&"),
+    BREAK("@"),
+    DEFAULT("~"),
 
 
     LESS("<"),
