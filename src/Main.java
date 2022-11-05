@@ -17,7 +17,7 @@ public class Main {
         Scanner scanner = new Scanner(source);
         Parser p = new Parser( scanner );
         p.parseProgram();
-        Token token = scanner.scan();
+//        Token token = scanner.scan();
 //        while (token.getKind() != TokenKind.NULLTERMINANT)
 //        {
 //            System.out.println( token.getKind() + " " + token.getSpelling());

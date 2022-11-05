@@ -4,6 +4,7 @@ public enum TokenKind {
     IDENTIFIER,
     INTEGERLITERAL,
     STRINGLITERAL,
+    BOOLLITERAL,
     OPERATOR,
     EXCEPTION,
 
@@ -17,8 +18,6 @@ public enum TokenKind {
     SHOVE("shove"),
     FOLLOWING("following"),
     BOOL("boolean"),
-    TRUE("true"),
-    FALSE("false"),
     STRING("string"),
     NUMBER("number"),
     SEQUENCE("sequence"),

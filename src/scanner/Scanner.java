@@ -33,7 +33,47 @@ public class Scanner {
     }
 
     private TokenKind scanToken(){
-        if(isLetter(currentChar) || isAllowedCharacter(currentChar)){
+        if(currentChar == 't')
+        {
+            proceedToNextCharacter();
+            if(currentChar == 'r')
+            {
+                proceedToNextCharacter();
+                if(currentChar == 'u')
+                {
+                    proceedToNextCharacter();
+                    if(currentChar == 'e')
+                    {
+                        proceedToNextCharacter();
+                        return BOOLLITERAL;
+                    }
+                }
+            }
+            return EXCEPTION;
+        }
+       else if(currentChar == 'f')
+        {
+            proceedToNextCharacter();
+            if(currentChar == 'a')
+            {
+                proceedToNextCharacter();
+                if(currentChar == 'l')
+                {
+                    proceedToNextCharacter();
+                    if(currentChar == 's')
+                    {
+                        proceedToNextCharacter();
+                        if(currentChar == 'e')
+                        {
+                            proceedToNextCharacter();
+                            return BOOLLITERAL;
+                        }
+                    }
+                }
+            }
+            return EXCEPTION;
+        }
+        else if(isLetter(currentChar) || isAllowedCharacter(currentChar)){
             proceedToNextCharacter();
             while (isLetter(currentChar) || isDigit(currentChar) || isAllowedCharacter(currentChar))
             {
@@ -133,6 +173,8 @@ public class Scanner {
                     }
                     proceedToNextCharacter();
                 }
+
+
             case '\0':
                 return NULLTERMINANT;
 

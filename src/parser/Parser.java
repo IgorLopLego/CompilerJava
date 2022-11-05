@@ -4,7 +4,6 @@ import scanner.Scanner;
 import scanner.Token;
 import scanner.TokenKind;
 
-import static scanner.Source.EOT;
 import static scanner.TokenKind.*;
 
 public class Parser {
@@ -29,6 +28,10 @@ public class Parser {
                     parseDeclaration();
                 }
             }
+            if(isAStatement())
+            {
+
+            }
         }
         accept(END);
         if( currentToken.getKind() != NULLTERMINANT) {
@@ -41,29 +44,30 @@ public class Parser {
         {
             case NUMBER:
                 accept(NUMBER);
-                accept(IDENTIFIER);
-                accept(ASSIGN);
-                accept(INTEGERLITERAL);
-                accept(DOLLAR);
-                break;
+                continueEnumeration(NUMBER);
+               while (currentToken.getKind() == COMMA)
+               {
+                   accept(COMMA);
+                  continueEnumeration(NUMBER);
+               }
+               accept(DOLLAR);
+               break;
             case STRING:
                 accept(STRING);
-                accept(IDENTIFIER);
-                accept(ASSIGN);
-                accept(STRINGLITERAL);
+                continueEnumeration(STRING);
+                while (currentToken.getKind() == COMMA){
+                    accept(COMMA);
+                    continueEnumeration(STRING);
+                }
                 accept(DOLLAR);
                 break;
             case BOOL:
                 accept(BOOL);
-                accept(IDENTIFIER);
-                accept(ASSIGN);
-                if(currentToken.getKind() == TRUE)
+                continueEnumeration(BOOL);
+                while (currentToken.getKind() == COMMA)
                 {
-                    accept(TRUE);
-                }
-                else if(currentToken.getKind() == FALSE)
-                {
-                    accept(FALSE);
+                    accept(COMMA);
+                    continueEnumeration(BOOL);
                 }
                 accept(DOLLAR);
                 break;
@@ -100,6 +104,23 @@ public class Parser {
         }
     }
 
+    private void continueEnumeration(TokenKind tokenKind){
+        accept(IDENTIFIER);
+        accept(ASSIGN);
+        if(tokenKind == NUMBER)
+        {
+            accept(INTEGERLITERAL);
+        }
+        else if(tokenKind == STRING)
+        {
+            accept(STRINGLITERAL);
+        }
+        else if(tokenKind == BOOL)
+        {
+            accept(BOOLLITERAL);
+        }
+    }
+
 
     private void parseDeclarations(){
         while(isADeclaration())
@@ -109,7 +130,7 @@ public class Parser {
                 case NUMBER:
                     accept(NUMBER);
                     accept(IDENTIFIER);
-                    accept(DOLLAR);
+
                     break;
             }
         }
@@ -126,7 +147,7 @@ public class Parser {
     }
 
     private boolean isAnExpression(){
-        return currentToken.getKind() == TokenKind.IDENTIFIER || currentToken.getKind() == TokenKind.INTEGERLITERAL || currentToken.getKind() == TokenKind.TRUE || currentToken.getKind() == TokenKind.FALSE || currentToken.getKind() == TokenKind.OPERATOR || currentToken.getKind() == TokenKind.STRINGLITERAL;
+        return currentToken.getKind() == TokenKind.IDENTIFIER || currentToken.getKind() == TokenKind.INTEGERLITERAL || currentToken.getKind() == BOOLLITERAL || currentToken.getKind() == TokenKind.OPERATOR || currentToken.getKind() == TokenKind.STRINGLITERAL;
     }
 
 
