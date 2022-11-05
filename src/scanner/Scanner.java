@@ -33,51 +33,15 @@ public class Scanner {
     }
 
     private TokenKind scanToken(){
-        if(currentChar == 't')
-        {
-            proceedToNextCharacter();
-            if(currentChar == 'r')
-            {
-                proceedToNextCharacter();
-                if(currentChar == 'u')
-                {
-                    proceedToNextCharacter();
-                    if(currentChar == 'e')
-                    {
-                        proceedToNextCharacter();
-                        return BOOLLITERAL;
-                    }
-                }
-            }
-            return EXCEPTION;
-        }
-       else if(currentChar == 'f')
-        {
-            proceedToNextCharacter();
-            if(currentChar == 'a')
-            {
-                proceedToNextCharacter();
-                if(currentChar == 'l')
-                {
-                    proceedToNextCharacter();
-                    if(currentChar == 's')
-                    {
-                        proceedToNextCharacter();
-                        if(currentChar == 'e')
-                        {
-                            proceedToNextCharacter();
-                            return BOOLLITERAL;
-                        }
-                    }
-                }
-            }
-            return EXCEPTION;
-        }
-        else if(isLetter(currentChar) || isAllowedCharacter(currentChar)){
+        if(isLetter(currentChar) || isAllowedCharacter(currentChar)){
             proceedToNextCharacter();
             while (isLetter(currentChar) || isDigit(currentChar) || isAllowedCharacter(currentChar))
             {
                 proceedToNextCharacter();
+            }
+            if(this.currentSpelling.toString().equals("true") || this.currentSpelling.toString().equals("false"))
+            {
+                return BOOLLITERAL;
             }
             return IDENTIFIER;
         }
