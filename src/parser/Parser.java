@@ -11,7 +11,7 @@ public class Parser {
     private Scanner scanner;
     private Token currentToken;
 
-    Parser(Scanner scanner)
+   public Parser(Scanner scanner)
     {
         this.scanner = scanner;
         currentToken = scanner.scan();
@@ -134,10 +134,10 @@ public class Parser {
     {
         if( currentToken.getKind() == expected )
         {
-            System.out.println("Token successfully accepted" + currentToken.getKind());
+            System.out.println("Token successfully accepted " + currentToken.getKind());
             currentToken = scanner.scan();
         }
         else
-            System.out.println( "Expected token of kind " + expected + "and actually got " + currentToken.getKind() );
+            System.out.println( "Expected token of kind " + expected + " and actually got " + currentToken.getKind() );
     }
 }

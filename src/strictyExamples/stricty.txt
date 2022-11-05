@@ -1,0 +1,5 @@
+start
+string someString # `halloween` $
+number negativeIgor # -99.9 $
+boolean igor # true $
+end

@@ -1,3 +1,4 @@
+import parser.Parser;
 import scanner.Scanner;
 import scanner.Source;
 import scanner.Token;
@@ -14,12 +15,14 @@ public class Main {
         fileChooser.showOpenDialog( null );
         Source source = new Source(fileChooser.getSelectedFile().getAbsolutePath());
         Scanner scanner = new Scanner(source);
+        Parser p = new Parser( scanner );
+        p.parseProgram();
         Token token = scanner.scan();
-        while (token.getKind() != TokenKind.NULLTERMINANT)
-        {
-            System.out.println( token.getKind() + " " + token.getSpelling());
-            token = scanner.scan();
-        }
+//        while (token.getKind() != TokenKind.NULLTERMINANT)
+//        {
+//            System.out.println( token.getKind() + " " + token.getSpelling());
+//            token = scanner.scan();
+//        }
 
     }
 }
