@@ -26,6 +26,8 @@ public enum TokenKind {
     DOLLAR("$"),
     LEFTPARAN( "[" ),
     RIGHTPARAN( "]" ),
+    SWITCHLEFTPARAM("{"),
+    SWITCHRIGHTPARAM("}"),
     RETURN("<-"),
     QUESTION("?"),
     SEMICOLUMN(":"),

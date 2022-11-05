@@ -19,23 +19,7 @@ public class Parser {
     public void parseProgram()
     {
         accept(START);
-        while (isADeclaration() || isAStatement())
-        {
-            if(isADeclaration())
-            {
-                while (isADeclaration())
-                {
-                    parseDeclaration();
-                }
-            }
-            if(isAStatement())
-            {
-                while (isAStatement())
-                {
-                    parseStatement();
-                }
-            }
-        }
+        DeclarationAndStatementloop();
         accept(END);
         if( currentToken.getKind() != NULLTERMINANT) {
             System.out.println("Tokens found after end of program");
@@ -80,15 +64,16 @@ public class Parser {
            case SWITCH:
                accept(SWITCH);
                accept(LEFTPARAN);
-               acceptNumberOrBooleanOrString();
+               accept(IDENTIFIER);
                accept(RIGHTPARAN);
-//               while(currentToken.getKind() != CASE)
-//               {
-//                   acceptCase();
-//               }
-
-
-
+               accept(SEMICOLUMN);
+               accept(SWITCHLEFTPARAM);
+               while (currentToken.getKind() != SWITCHRIGHTPARAM)
+               {
+                   acceptCase();
+               }
+               accept(SWITCHRIGHTPARAM);
+               accept(DOLLAR);
        }
     }
 
@@ -104,58 +89,83 @@ public class Parser {
            }
            accept(DOLLAR);
        }
-        switch (currentToken.getKind())
-        {
-            case SEQUENCE:
-                accept(SEQUENCE);
-                accept(IDENTIFIER);
-                accept(ASSIGN);
-                if(currentToken.getKind() == NUMBER)
-                {
-                    accept(NUMBER);
-                }
-                else if(currentToken.getKind() == STRING)
-                {
-                    accept(STRING);
-                }
-                else if (currentToken.getKind() == BOOL)
-                {
-                    accept(BOOL);
-                }
-                else{
-                    accept(EXCEPTION);
-                }
-                accept(DOLLAR);
-                break;
-            case EXEFUNC:
-                accept(EXEFUNC);
-                acceptReturnFuncReturnType();
-                accept(IDENTIFIER);
-                accept(LEFTPARAN);
-                // to describe all possible solutions of the function
-                accept(RETURN);
-                accept(DOLLAR);
-                accept(RIGHTPARAN);
-                break;
-        }
+        else if(currentToken.getKind() == SEQUENCE)
+       {
+           accept(SEQUENCE);
+           accept(IDENTIFIER);
+           accept(ASSIGN);
+           if(currentToken.getKind() == NUMBER)
+           {
+               accept(NUMBER);
+           }
+           else if(currentToken.getKind() == STRING)
+           {
+               accept(STRING);
+           }
+           else if (currentToken.getKind() == BOOL)
+           {
+               accept(BOOL);
+           }
+           else{
+               accept(EXCEPTION);
+           }
+           accept(DOLLAR);
+       }
+        else if (currentToken.getKind() == EXEFUNC)
+       {
+           accept(EXEFUNC);
+           acceptReturnFuncReturnType();
+           accept(IDENTIFIER);
+           accept(LEFTPARAN);
+           // to describe all possible solutions of the function
+           accept(RETURN);
+           accept(DOLLAR);
+           accept(RIGHTPARAN);
+       }
     }
 
     private void acceptCase(){
         accept(CASE);
-        acceptNumberOrBooleanOrString();
-        accept(SEMICOLUMN);
-    }
-
-    private void acceptNumberOrBooleanOrString(){
-        if(currentToken.getKind() == INTEGERLITERAL || currentToken.getKind() == STRINGLITERAL || currentToken.getKind() == BOOLLITERAL)
+        if(isLiteral(currentToken.getKind()))
         {
             accept(currentToken.getKind());
         }
         else{
             accept(EXCEPTION);
         }
+        accept(SEMICOLUMN);
+        DeclarationAndStatementloop();
+
+
+        accept(BREAK);
     }
 
+    private void DeclarationAndStatementloop() {
+        while (isADeclaration() || isAStatement())
+        {
+            if(isADeclaration())
+            {
+                while (isADeclaration())
+                {
+                    parseDeclaration();
+                }
+            }
+            if(isAStatement())
+            {
+                while (isAStatement())
+                {
+                    parseStatement();
+                }
+            }
+
+        }
+    }
+
+
+    private boolean isLiteral(TokenKind tokenKind)
+    {
+        return  tokenKind == BOOLLITERAL || tokenKind == STRINGLITERAL || tokenKind == INTEGERLITERAL;
+    }
     private void acceptIdentifierOrNumber(){
        if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == INTEGERLITERAL)
        {

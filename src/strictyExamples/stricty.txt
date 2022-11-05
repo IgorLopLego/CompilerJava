@@ -1,7 +1,19 @@
 start
-for[number i # 8: i < 9 : i add 1] []
-scream[`hello world`] $
+number igor # 9$
+switch[igor]:{
+&7:
 number negativeIgor # -99.9, positiveIgor # 99.9 $
-boolean isHere # true, isNotHere #false, anotherOne # true $
+@
+&8:
+scream[`hello world`] $
+@
+}$
+
+boolean isHere # true, isNotHere # false add true, anotherOne # true ,
 string someString # `halloween`$
+shove[]$
+
+boolean isCorrect # true add false,
+number igor # 4 add 2 subtract ir multiplication 4 $
+for[number i # 8: i < 9 : i add 1] [] $
 end
