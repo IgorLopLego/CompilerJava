@@ -137,8 +137,15 @@ public class Scanner {
                     }
                     proceedToNextCharacter();
                 }
-
-
+            case '&':
+                proceedToNextCharacter();
+                return CASE;
+            case '@':
+                proceedToNextCharacter();
+                return BREAK;
+            case '~':
+                proceedToNextCharacter();
+                return DEFAULT;
             case '\0':
                 return NULLTERMINANT;
 
