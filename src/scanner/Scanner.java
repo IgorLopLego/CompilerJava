@@ -81,7 +81,12 @@ public class Scanner {
             case ']':
                 proceedToNextCharacter();
                 return RIGHTPARAN;
-
+            case '{':
+                proceedToNextCharacter();
+                return SWITCHLEFTPARAM;
+            case '}':
+                proceedToNextCharacter();
+                return SWITCHRIGHTPARAM;
             case '?':
                 proceedToNextCharacter();
                 return QUESTION;

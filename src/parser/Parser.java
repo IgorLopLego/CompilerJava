@@ -4,8 +4,6 @@ import scanner.Scanner;
 import scanner.Token;
 import scanner.TokenKind;
 
-import java.util.Currency;
-
 import static scanner.TokenKind.*;
 
 public class Parser {
@@ -21,23 +19,7 @@ public class Parser {
     public void parseProgram()
     {
         accept(START);
-        while (isADeclaration() || isAStatement())
-        {
-            if(isADeclaration())
-            {
-                while (isADeclaration())
-                {
-                    parseDeclaration();
-                }
-            }
-            if(isAStatement())
-            {
-                while (isAStatement())
-                {
-                    parseStatement();
-                }
-            }
-        }
+        DeclarationAndStatementloop();
         accept(END);
         if( currentToken.getKind() != NULLTERMINANT) {
             System.out.println("Tokens found after end of program");
@@ -82,100 +64,108 @@ public class Parser {
            case SWITCH:
                accept(SWITCH);
                accept(LEFTPARAN);
-               acceptNumberOrBooleanOrString();
+               accept(IDENTIFIER);
                accept(RIGHTPARAN);
-//               while(currentToken.getKind() != CASE)
-//               {
-//                   acceptCase();
-//               }
-
-
-
+               accept(SEMICOLUMN);
+               accept(SWITCHLEFTPARAM);
+               while (currentToken.getKind() != SWITCHRIGHTPARAM)
+               {
+                   acceptCase();
+               }
+               accept(SWITCHRIGHTPARAM);
+               accept(DOLLAR);
        }
     }
 
     private void parseDeclaration(){
-        switch (currentToken.getKind())
-        {
-            case NUMBER:
-                accept(NUMBER);
-                continueEnumeration(NUMBER);
-               while (currentToken.getKind() == COMMA)
-               {
-                   accept(COMMA);
-                  continueEnumeration(NUMBER);
-               }
-               accept(DOLLAR);
-               break;
-            case STRING:
-                accept(STRING);
-                continueEnumeration(STRING);
-                while (currentToken.getKind() == COMMA){
-                    accept(COMMA);
-                    continueEnumeration(STRING);
-                }
-                accept(DOLLAR);
-                break;
-            case BOOL:
-                accept(BOOL);
-                continueEnumeration(BOOL);
-                while (currentToken.getKind() == COMMA)
-                {
-                    accept(COMMA);
-                    continueEnumeration(BOOL);
-                }
-                accept(DOLLAR);
-                break;
-            case SEQUENCE:
-                accept(SEQUENCE);
-                accept(IDENTIFIER);
-                accept(ASSIGN);
-                if(currentToken.getKind() == NUMBER)
-                {
-                    accept(NUMBER);
-                }
-                else if(currentToken.getKind() == STRING)
-                {
-                    accept(STRING);
-                }
-                else if (currentToken.getKind() == BOOL)
-                {
-                    accept(BOOL);
-                }
-                else{
-                    accept(EXCEPTION);
-                }
-                accept(DOLLAR);
-                break;
-            case EXEFUNC:
-                accept(EXEFUNC);
-                acceptReturnFuncReturnType();
-                accept(IDENTIFIER);
-                accept(LEFTPARAN);
-                // to describe all possible solutions of the function
-                accept(RETURN);
-                accept(DOLLAR);
-                accept(RIGHTPARAN);
-                break;
-        }
+       if(currentToken.getKind() == NUMBER || currentToken.getKind() == STRING | currentToken.getKind() == BOOL)
+       {
+           oneDeclaration();
+
+           while (currentToken.getKind() == COMMA)
+           {
+               accept(COMMA);
+               oneDeclaration();
+           }
+           accept(DOLLAR);
+       }
+        else if(currentToken.getKind() == SEQUENCE)
+       {
+           accept(SEQUENCE);
+           accept(IDENTIFIER);
+           accept(ASSIGN);
+           if(currentToken.getKind() == NUMBER)
+           {
+               accept(NUMBER);
+           }
+           else if(currentToken.getKind() == STRING)
+           {
+               accept(STRING);
+           }
+           else if (currentToken.getKind() == BOOL)
+           {
+               accept(BOOL);
+           }
+           else{
+               accept(EXCEPTION);
+           }
+           accept(DOLLAR);
+       }
+        else if (currentToken.getKind() == EXEFUNC)
+       {
+           accept(EXEFUNC);
+           acceptReturnFuncReturnType();
+           accept(IDENTIFIER);
+           accept(LEFTPARAN);
+           // to describe all possible solutions of the function
+           accept(RETURN);
+           accept(DOLLAR);
+           accept(RIGHTPARAN);
+       }
     }
 
     private void acceptCase(){
         accept(CASE);
-        acceptNumberOrBooleanOrString();
-        accept(SEMICOLUMN);
-    }
-
-    private void acceptNumberOrBooleanOrString(){
-        if(currentToken.getKind() == INTEGERLITERAL || currentToken.getKind() == STRINGLITERAL || currentToken.getKind() == BOOLLITERAL)
+        if(isLiteral(currentToken.getKind()))
         {
             accept(currentToken.getKind());
         }
         else{
             accept(EXCEPTION);
         }
+        accept(SEMICOLUMN);
+        DeclarationAndStatementloop();
+
+
+        accept(BREAK);
     }
 
+    private void DeclarationAndStatementloop() {
+        while (isADeclaration() || isAStatement())
+        {
+            if(isADeclaration())
+            {
+                while (isADeclaration())
+                {
+                    parseDeclaration();
+                }
+            }
+            if(isAStatement())
+            {
+                while (isAStatement())
+                {
+                    parseStatement();
+                }
+            }
+
+        }
+    }
+
+
+    private boolean isLiteral(TokenKind tokenKind)
+    {
+        return  tokenKind == BOOLLITERAL || tokenKind == STRINGLITERAL || tokenKind == INTEGERLITERAL;
+    }
     private void acceptIdentifierOrNumber(){
        if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == INTEGERLITERAL)
        {
@@ -209,16 +199,45 @@ public class Parser {
 
     }
 
-    private void continueEnumeration(TokenKind tokenKind) {
+    private void oneDeclaration() {
+       TokenKind acceptedType = currentToken.getKind();
+       if(acceptedType == NUMBER || acceptedType == BOOL || acceptedType == STRING)
+       {
+           accept(acceptedType);
+       }
         accept(IDENTIFIER);
         accept(ASSIGN);
-        if (tokenKind == NUMBER) {
-            accept(INTEGERLITERAL);
-        } else if (tokenKind == STRING) {
-            accept(STRINGLITERAL);
-        } else if (tokenKind == BOOL) {
-            accept(BOOLLITERAL);
+        while(true) {
+            if (isValidDeclarationToTheTypeVariable(acceptedType)) {
+                accept(currentToken.getKind());
+                if(isCommaOrDollar())
+                {
+                    break;
+                }
+                accept(OPERATOR);
+            }
+            else if (acceptedType == IDENTIFIER)
+            {
+                accept(currentToken.getKind());
+                if(isCommaOrDollar())
+                {
+                    break;
+                }
+                accept(OPERATOR);
+            }
+            else {
+                accept(EXCEPTION);
+                break;
+            }
         }
+    }
+
+    public boolean isValidDeclarationToTheTypeVariable(TokenKind acceptedType){
+       return (acceptedType == NUMBER && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == INTEGERLITERAL)) || (acceptedType == BOOL && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == BOOLLITERAL)) || (acceptedType == STRING && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == STRINGLITERAL));
+    }
+
+    public boolean isCommaOrDollar(){
+       return currentToken.getKind() == COMMA || currentToken.getKind() == DOLLAR;
     }
 
     public boolean isAStatement(){
