@@ -19,7 +19,7 @@ public class Parser {
     public void parseProgram()
     {
         accept(START);
-        DeclarationAndStatementloop();
+        declarationAndStatementsLoop();
         accept(END);
         if( currentToken.getKind() != NULLTERMINANT) {
             System.out.println("Tokens found after end of program");
@@ -42,11 +42,11 @@ public class Parser {
                accept(NUMBER);
                accept(IDENTIFIER);
                accept(ASSIGN);
-               accept(INTEGERLITERAL);
+               accept(NUMBERLITERAL);
                accept(SEMICOLUMN);
                accept(IDENTIFIER);
                acceptComparison();
-               accept(INTEGERLITERAL);
+               accept(NUMBERLITERAL);
                accept(SEMICOLUMN);
                accept(IDENTIFIER);
                accept(OPERATOR);
@@ -74,53 +74,88 @@ public class Parser {
                }
                accept(SWITCHRIGHTPARAM);
                accept(DOLLAR);
+               break;
+           case RETURN:
+               accept(RETURN);
+               acceptReturnArguments();
+               accept(DOLLAR);
+               break;
+
        }
     }
 
-    private void parseDeclaration(){
-       if(currentToken.getKind() == NUMBER || currentToken.getKind() == STRING | currentToken.getKind() == BOOL)
-       {
-           oneDeclaration();
+    private void parseAssignDeclaration(){
+        if(currentToken.getKind() == NUMBER || currentToken.getKind() == STRING | currentToken.getKind() == BOOL)
+        {
+            oneDeclaration();
 
-           while (currentToken.getKind() == COMMA)
-           {
-               accept(COMMA);
-               oneDeclaration();
-           }
-           accept(DOLLAR);
-       }
+            while (currentToken.getKind() == COMMA)
+            {
+                accept(COMMA);
+                oneDeclaration();
+            }
+            accept(DOLLAR);
+        }
         else if(currentToken.getKind() == SEQUENCE)
-       {
-           accept(SEQUENCE);
-           accept(IDENTIFIER);
-           accept(ASSIGN);
-           if(currentToken.getKind() == NUMBER)
-           {
-               accept(NUMBER);
-           }
-           else if(currentToken.getKind() == STRING)
-           {
-               accept(STRING);
-           }
-           else if (currentToken.getKind() == BOOL)
-           {
-               accept(BOOL);
-           }
-           else{
-               accept(EXCEPTION);
-           }
-           accept(DOLLAR);
-       }
-        else if (currentToken.getKind() == EXEFUNC)
+        {
+            accept(SEQUENCE);
+            accept(IDENTIFIER);
+            accept(ASSIGN);
+            if(currentToken.getKind() == NUMBER)
+            {
+                accept(NUMBER);
+            }
+            else if(currentToken.getKind() == STRING)
+            {
+                accept(STRING);
+            }
+            else if (currentToken.getKind() == BOOL)
+            {
+                accept(BOOL);
+            }
+            else{
+                accept(EXCEPTION);
+            }
+            accept(DOLLAR);
+        }
+    }
+
+    private void parseDeclaration(){
+      parseAssignDeclaration();
+       if (currentToken.getKind() == EXEFUNC)
        {
            accept(EXEFUNC);
            acceptReturnFuncReturnType();
            accept(IDENTIFIER);
            accept(LEFTPARAN);
-           // to describe all possible solutions of the function
-           accept(RETURN);
-           accept(DOLLAR);
+           while (currentToken.getKind() != RIGHTPARAN)
+           {
+              acceptArguments();
+           }
            accept(RIGHTPARAN);
+           accept(FUNCTIONLEFTPARAM);
+           assignDeclarationsAndStatementsLoop();
+           acceptReturnArguments();
+           accept(FUNCTIONRIGHTPARAM);
+       }
+    }
+
+
+    private void acceptReturnArguments(){
+       if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == STRINGLITERAL || currentToken.getKind() == NUMBERLITERAL || currentToken.getKind() == BOOLLITERAL)
+       {
+           accept(currentToken.getKind());
+       }
+    }
+
+    private void acceptArguments(){
+       if(currentToken.getKind() == NUMBER || currentToken.getKind() == STRING || currentToken.getKind() == BOOL)
+       {
+           accept(currentToken.getKind());
+           accept(IDENTIFIER);
+           if(currentToken.getKind() != RIGHTPARAN) {
+               accept(COMMA);
+           }
        }
     }
 
@@ -134,13 +169,34 @@ public class Parser {
             accept(EXCEPTION);
         }
         accept(SEMICOLUMN);
-        DeclarationAndStatementloop();
+        assignDeclarationsAndStatementsLoop();
 
 
         accept(BREAK);
     }
 
-    private void DeclarationAndStatementloop() {
+
+    private void assignDeclarationsAndStatementsLoop(){
+        while (isAssignDeclaration() || isAStatement())
+        {
+            if(isAssignDeclaration())
+            {
+                while (isAssignDeclaration())
+                {
+                   parseAssignDeclaration();
+                }
+            }
+            if(isAStatement())
+            {
+                while (isAStatement())
+                {
+                    parseStatement();
+                }
+            }
+
+        }
+    }
+    private void declarationAndStatementsLoop() {
         while (isADeclaration() || isAStatement())
         {
             if(isADeclaration())
@@ -164,10 +220,10 @@ public class Parser {
 
     private boolean isLiteral(TokenKind tokenKind)
     {
-        return  tokenKind == BOOLLITERAL || tokenKind == STRINGLITERAL || tokenKind == INTEGERLITERAL;
+        return  tokenKind == BOOLLITERAL || tokenKind == STRINGLITERAL || tokenKind == NUMBERLITERAL;
     }
     private void acceptIdentifierOrNumber(){
-       if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == INTEGERLITERAL)
+       if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == NUMBERLITERAL)
        {
            accept(currentToken.getKind());
        }
@@ -233,7 +289,7 @@ public class Parser {
     }
 
     public boolean isValidDeclarationToTheTypeVariable(TokenKind acceptedType){
-       return (acceptedType == NUMBER && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == INTEGERLITERAL)) || (acceptedType == BOOL && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == BOOLLITERAL)) || (acceptedType == STRING && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == STRINGLITERAL));
+       return (acceptedType == NUMBER && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == NUMBERLITERAL)) || (acceptedType == BOOL && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == BOOLLITERAL)) || (acceptedType == STRING && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == STRINGLITERAL));
     }
 
     public boolean isCommaOrDollar(){
@@ -241,15 +297,19 @@ public class Parser {
     }
 
     public boolean isAStatement(){
-        return isAnExpression() || currentToken.getKind() == SWITCH || currentToken.getKind() == FOR || currentToken.getKind() == SCREAM || currentToken.getKind() == SHOVE;
+        return isAnExpression() || currentToken.getKind() == RETURN || currentToken.getKind() == SWITCH || currentToken.getKind() == FOR || currentToken.getKind() == SCREAM || currentToken.getKind() == SHOVE;
     }
 
     private boolean isADeclaration() {
-        return currentToken.getKind() == BOOL || currentToken.getKind() == EXEFUNC || currentToken.getKind() == STRING || currentToken.getKind() == NUMBER || currentToken.getKind() == SEQUENCE;
+        return isAssignDeclaration() || currentToken.getKind() == EXEFUNC;
+    }
+
+    private boolean isAssignDeclaration(){
+       return currentToken.getKind() == BOOL || currentToken.getKind() == STRING || currentToken.getKind() == NUMBER || currentToken.getKind() == SEQUENCE;
     }
 
     private boolean isAnExpression(){
-        return currentToken.getKind() == TokenKind.IDENTIFIER || currentToken.getKind() == TokenKind.INTEGERLITERAL || currentToken.getKind() == BOOLLITERAL || currentToken.getKind() == TokenKind.OPERATOR || currentToken.getKind() == TokenKind.STRINGLITERAL;
+        return currentToken.getKind() == TokenKind.IDENTIFIER || currentToken.getKind() == TokenKind.NUMBERLITERAL || currentToken.getKind() == BOOLLITERAL || currentToken.getKind() == TokenKind.OPERATOR || currentToken.getKind() == TokenKind.STRINGLITERAL;
     }
 
 

@@ -2,7 +2,7 @@ package scanner;
 
 public enum TokenKind {
     IDENTIFIER,
-    INTEGERLITERAL,
+    NUMBERLITERAL,
     STRINGLITERAL,
     BOOLLITERAL,
     OPERATOR,
@@ -28,6 +28,8 @@ public enum TokenKind {
     RIGHTPARAN( "]" ),
     SWITCHLEFTPARAM("{"),
     SWITCHRIGHTPARAM("}"),
+    FUNCTIONLEFTPARAM("("),
+    FUNCTIONRIGHTPARAM(")"),
     RETURN("<-"),
     QUESTION("?"),
     SEMICOLUMN(":"),
