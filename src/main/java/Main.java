@@ -1,8 +1,8 @@
+
+
 import parser.Parser;
 import scanner.Scanner;
 import scanner.Source;
-import scanner.Token;
-import scanner.TokenKind;
 
 import javax.swing.*;
 

@@ -1,6 +1,5 @@
 package scanner;
 
-
 import static scanner.TokenKind.*;
 
 public class Scanner {
