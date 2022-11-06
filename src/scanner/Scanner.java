@@ -87,6 +87,12 @@ public class Scanner {
             case '}':
                 proceedToNextCharacter();
                 return SWITCHRIGHTPARAM;
+            case '(':
+                proceedToNextCharacter();
+                return FUNCTIONLEFTPARAM;
+            case ')':
+                proceedToNextCharacter();
+                return FUNCTIONRIGHTPARAM;
             case '?':
                 proceedToNextCharacter();
                 return QUESTION;
@@ -180,7 +186,7 @@ public class Scanner {
         {
             return EXCEPTION;
         }
-        return INTEGERLITERAL;
+        return NUMBERLITERAL;
     }
 
     private boolean isLetter(char ch) {
