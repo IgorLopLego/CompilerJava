@@ -8,7 +8,7 @@ public class Source {
     public static final char newLine = '\n';
     public static final char EOT = '\0';
 
-    private FileInputStream source;
+    public FileInputStream source;
     public Source( String sourceFileName )
     {
         try {

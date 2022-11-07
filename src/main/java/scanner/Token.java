@@ -1,5 +1,7 @@
 package scanner;
 
+import java.util.Objects;
+
 import static scanner.TokenKind.OPERATOR;
 
 public class Token {
@@ -7,7 +9,7 @@ public class Token {
     private String spelling;
     private static final String additionOperator[] = {"add", "subtract"};
     private static final String multiplicationOperators[] = {"multiplication", "division", "module"};
-    private static final TokenKind[] KEYWORDS = {TokenKind.DOLLAR, TokenKind.START, TokenKind.END, TokenKind.FOR, TokenKind.SWITCH, TokenKind.EXEFUNC, TokenKind.SCREAM, TokenKind.FOLLOWING, TokenKind.BOOL, TokenKind.STRING, TokenKind.NUMBER, TokenKind.SHOVE, TokenKind.SEQUENCE, TokenKind.VOID};
+    private static final TokenKind[] KEYWORDS = {TokenKind.DOLLAR, TokenKind.START, TokenKind.END, TokenKind.FOR, TokenKind.SWITCH, TokenKind.FUNCTION, TokenKind.SCREAM, TokenKind.FOLLOWING, TokenKind.BOOL, TokenKind.STRING, TokenKind.NUMBER, TokenKind.SHOVE, TokenKind.SEQUENCE, TokenKind.VOID};
 
 
     public Token(TokenKind kind, String spelling)
@@ -66,11 +68,27 @@ public class Token {
         return spelling;
     }
 
+    @Override
+    public String toString() {
+        if (this.spelling.isEmpty() || this.spelling.equals("\n")) {
+            return "Token { kind: " + kind + " }";
+        }
 
+        return "Token { kind: " + kind + ", spelling: '" + spelling + "' }";
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Token token = (Token) o;
+        return kind == token.kind && spelling.equals(token.spelling);
+    }
 
-
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(kind, spelling);
+    }
 }

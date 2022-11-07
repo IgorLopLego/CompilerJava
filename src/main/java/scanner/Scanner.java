@@ -40,7 +40,7 @@ public class Scanner {
             }
             if(this.currentSpelling.toString().equals("true") || this.currentSpelling.toString().equals("false"))
             {
-                return BOOLLITERAL;
+                return BOOL_LITERAL;
             }
             return IDENTIFIER;
         }
@@ -75,30 +75,30 @@ public class Scanner {
 
             case '[':
                 proceedToNextCharacter();
-                return LEFTPARAN;
+                return LEFT_PARENTHESES;
 
             case ']':
                 proceedToNextCharacter();
-                return RIGHTPARAN;
+                return RIGHT_PARENTHESES;
             case '{':
                 proceedToNextCharacter();
-                return SWITCHLEFTPARAM;
+                return SWITCH_LEFT_PARENTHESES;
             case '}':
                 proceedToNextCharacter();
-                return SWITCHRIGHTPARAM;
+                return SWITCH_RIGHT_PARENTHESES;
             case '(':
                 proceedToNextCharacter();
-                return FUNCTIONLEFTPARAM;
+                return FUNCTION_LEFT_PARENTHESES;
             case ')':
                 proceedToNextCharacter();
-                return FUNCTIONRIGHTPARAM;
+                return FUNCTION_RIGHT_PARENTHESES;
             case '?':
                 proceedToNextCharacter();
                 return QUESTION;
 
             case ':':
                 proceedToNextCharacter();
-                return SEMICOLUMN;
+                return COLON;
 
             case '<':
                 proceedToNextCharacter();
@@ -110,7 +110,7 @@ public class Scanner {
                 if(currentChar == '=')
                 {
                     proceedToNextCharacter();
-                    return LESSOREQUAL;
+                    return LESS_OR_EQUAL;
                 }
                 return LESS;
 
@@ -119,7 +119,7 @@ public class Scanner {
                 if(currentChar == '=')
                 {
                     proceedToNextCharacter();
-                    return MOREOREQUAL;
+                    return MORE_OR_EQUAL;
                 }
                 return MORE;
 
@@ -143,7 +143,7 @@ public class Scanner {
                     else if(currentChar == '`')
                     {
                         proceedToNextCharacter();
-                        return  STRINGLITERAL;
+                        return STRING_LITERAL;
                     }
                     proceedToNextCharacter();
                 }
@@ -157,7 +157,7 @@ public class Scanner {
                 proceedToNextCharacter();
                 return DEFAULT;
             case '\0':
-                return NULLTERMINANT;
+                return NULL_TERMINATOR;
 
             default:
                 proceedToNextCharacter();
@@ -185,7 +185,7 @@ public class Scanner {
         {
             return EXCEPTION;
         }
-        return NUMBERLITERAL;
+        return NUMBER_LITERAL;
     }
 
     private boolean isLetter(char ch) {

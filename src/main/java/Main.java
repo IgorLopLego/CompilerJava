@@ -1,7 +1,4 @@
-
-
-import parser.Parser;
-import scanner.Scanner;
+import scannerRefactor.Scanner;
 import scanner.Source;
 
 import javax.swing.*;
@@ -9,20 +6,25 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) {
-        String projectPath =  System.getProperty("user.dir")+"/examples";
-        System.out.println("Path: " + projectPath);
-        JFileChooser fileChooser = new JFileChooser(projectPath);
-        fileChooser.showOpenDialog( null );
-        Source source = new Source(fileChooser.getSelectedFile().getAbsolutePath());
-        Scanner scanner = new Scanner(source);
-        Parser p = new Parser( scanner );
-        p.parseProgram();
-//        Token token = scanner.scan();
-//        while (token.getKind() != TokenKind.NULLTERMINANT)
-//        {
-//            System.out.println( token.getKind() + " " + token.getSpelling());
-//            token = scanner.scan();
-//        }
+        var fileChooser = new JFileChooser(getExamplesDirectoryPath());
+        int fileChooserReturn = fileChooser.showOpenDialog(null);
 
+        if (fileChooserReturn  == JFileChooser.APPROVE_OPTION) {
+            Source source = new Source(fileChooser.getSelectedFile().getAbsolutePath());
+
+            Scanner scanner = new Scanner(source);
+
+            var tokens = scanner.scanSource();
+
+            for (var token : tokens) {
+                System.out.println(token);
+            }
+        } else {
+            System.out.println("No file was selected. The program will close.");
+        }
+    }
+
+    private static String getExamplesDirectoryPath() {
+        return System.getProperty("user.dir") + "/src/main/java/examples";
     }
 }

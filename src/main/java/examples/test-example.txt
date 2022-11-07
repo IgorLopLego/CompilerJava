@@ -1,0 +1,7 @@
+start
+
+| That is a small comment
+
+number numberFour # 4 $
+
+end
