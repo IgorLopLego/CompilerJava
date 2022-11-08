@@ -45,6 +45,12 @@ public class Scanner {
         return tokens;
     }
 
+    public void printTokens() {
+        for (var token : tokens) {
+            System.out.println(token);
+        }
+    }
+
     private void proceedToNextCharacter() {
         currentSpelling.append(currentCharacter);
         currentCharacter = source.getSource();

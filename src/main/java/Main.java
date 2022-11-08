@@ -1,30 +1,22 @@
 import scannerRefactor.Scanner;
 import scanner.Source;
+import utils.Path;
 
 import javax.swing.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        var fileChooser = new JFileChooser(getExamplesDirectoryPath());
-        int fileChooserReturn = fileChooser.showOpenDialog(null);
+        var fileChooser = new JFileChooser(Path.EXAMPLES_DIR);
 
-        if (fileChooserReturn  == JFileChooser.APPROVE_OPTION) {
-            Source source = new Source(fileChooser.getSelectedFile().getAbsolutePath());
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            var source = new Source(fileChooser.getSelectedFile().getAbsolutePath());
+            var scanner = new Scanner(source);
 
-            Scanner scanner = new Scanner(source);
-
-            var tokens = scanner.scanSource();
-
-            for (var token : tokens) {
-                System.out.println(token);
-            }
+            scanner.scanSource();
+            scanner.printTokens();
         } else {
             System.out.println("No file was selected. The program will close.");
         }
-    }
-
-    private static String getExamplesDirectoryPath() {
-        return System.getProperty("user.dir") + "/src/main/java/examples";
     }
 }
