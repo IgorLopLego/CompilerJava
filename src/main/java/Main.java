@@ -1,3 +1,4 @@
+import parserRefactor.Parser;
 import scannerRefactor.Scanner;
 import scanner.Source;
 import utils.Path;
@@ -13,8 +14,11 @@ public class Main {
             var source = new Source(fileChooser.getSelectedFile().getAbsolutePath());
             var scanner = new Scanner(source);
 
-            scanner.scanSource();
+            var tokens = scanner.scanSource();
             scanner.printTokens();
+
+            var parser = new Parser();
+            parser.parse(tokens);
         } else {
             System.out.println("No file was selected. The program will close.");
         }
