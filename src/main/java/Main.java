@@ -2,6 +2,7 @@ import parserRefactor.Parser;
 import scannerRefactor.Scanner;
 import scanner.Source;
 import utils.Path;
+import viewer.ViewerAST;
 
 import javax.swing.*;
 
@@ -18,7 +19,9 @@ public class Main {
             scanner.printTokens();
 
             var parser = new Parser();
-            parser.parse(tokens);
+            var programNode = parser.parse(tokens);
+
+            new ViewerAST(programNode);
         } else {
             System.out.println("No file was selected. The program will close.");
         }
