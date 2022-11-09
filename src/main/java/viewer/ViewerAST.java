@@ -8,9 +8,11 @@ import parserRefactor.nodes.declaration.Declarations;
 import parserRefactor.nodes.declaration.VariableDeclaration;
 import parserRefactor.nodes.expression.BinaryExpression;
 import parserRefactor.nodes.expression.IntegerLiteralExpression;
+import parserRefactor.nodes.expression.StringLiteralExpression;
 import parserRefactor.nodes.terminal.Identifier;
 import parserRefactor.nodes.terminal.IntegerLiteral;
 import parserRefactor.nodes.terminal.Operator;
+import parserRefactor.nodes.terminal.StringLiteral;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -70,6 +72,11 @@ public class ViewerAST extends JFrame {
             treeNode.add(createTree(((IntegerLiteralExpression) node).literal));
         } else if (node instanceof IntegerLiteral) {
             treeNode.setUserObject("IntegerLiteral " + ((IntegerLiteral) node).spelling);
+        } else if (node instanceof StringLiteralExpression) {
+            treeNode.setUserObject("StringLiteralExpression");
+            treeNode.add(createTree(((StringLiteralExpression) node).literal));
+        } else if (node instanceof StringLiteral) {
+            treeNode.setUserObject("StringLiteral " + ((StringLiteral) node).spelling);
         } else if (node instanceof BinaryExpression) {
             treeNode.setUserObject( "BinaryExpression" );
             treeNode.add(createTree(((BinaryExpression) node).leftOperand));

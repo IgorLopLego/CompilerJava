@@ -27,7 +27,7 @@ public class Scanner {
     public List<Token> scanSource() {
         while (currentCharacter != Source.EOT) {
             if (isWhiteSpace(currentCharacter)) {
-                proceedToNextCharacter();
+                proceedToNextCharacterWithAppend();
                 continue;
             }
 
@@ -51,17 +51,21 @@ public class Scanner {
         }
     }
 
-    private void proceedToNextCharacter() {
+    private void proceedToNextCharacterWithAppend() {
         currentSpelling.append(currentCharacter);
+        currentCharacter = source.getSource();
+    }
+
+    private void proceedToNextCharacter() {
         currentCharacter = source.getSource();
     }
 
     private TokenKind scanToken() {
         if (isLetter(currentCharacter) || isAllowedCharacter(currentCharacter)) {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
 
             while (isLetter(currentCharacter) || isDigit(currentCharacter) || isAllowedCharacter(currentCharacter)) {
-                proceedToNextCharacter();
+                proceedToNextCharacterWithAppend();
             }
 
             if (isBoolean(this.currentSpelling.toString())) {
@@ -72,12 +76,12 @@ public class Scanner {
         }
 
         if (isDigit(currentCharacter)) {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return checkForFloatingTokenKind();
         }
 
         if (currentCharacter == '-') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
 
             if (!isDigit(currentCharacter)) {
                 return EXCEPTION;
@@ -87,70 +91,70 @@ public class Scanner {
         }
 
         if (currentCharacter == '#') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return ASSIGN;
         }
 
         if (currentCharacter == ',') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return COMMA;
         }
 
         if (currentCharacter == '$') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return DOLLAR;
         }
 
         if (currentCharacter == '(') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return FUNCTION_LEFT_PARENTHESES;
         }
 
         if (currentCharacter == ')') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return FUNCTION_RIGHT_PARENTHESES;
         }
 
         if (currentCharacter == '[') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return LEFT_PARENTHESES;
         }
 
         if (currentCharacter == ']') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return RIGHT_PARENTHESES;
         }
 
         if (currentCharacter == '{') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return SWITCH_LEFT_PARENTHESES;
         }
 
         if (currentCharacter == '}') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return SWITCH_RIGHT_PARENTHESES;
         }
 
         if (currentCharacter == '?') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return QUESTION;
         }
 
         if (currentCharacter == ':') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return COLON;
         }
 
         if (currentCharacter == '<') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
 
             if (currentCharacter == '-') {
-                proceedToNextCharacter();
+                proceedToNextCharacterWithAppend();
                 return RETURN;
             }
 
             if (currentCharacter == '=') {
-                proceedToNextCharacter();
+                proceedToNextCharacterWithAppend();
                 return LESS_OR_EQUAL;
             }
 
@@ -158,10 +162,10 @@ public class Scanner {
         }
 
         if (currentCharacter == '>') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
 
             if (currentCharacter == '=') {
-                proceedToNextCharacter();
+                proceedToNextCharacterWithAppend();
                 return MORE_OR_EQUAL;
             }
 
@@ -169,10 +173,10 @@ public class Scanner {
         }
 
         if (currentCharacter == '=') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
 
             if (currentCharacter == '=') {
-                proceedToNextCharacter();
+                proceedToNextCharacterWithAppend();
                 return EQUALS;
             }
 
@@ -192,31 +196,31 @@ public class Scanner {
                     return STRING_LITERAL;
                 }
 
-                proceedToNextCharacter();
+                proceedToNextCharacterWithAppend();
             }
         }
 
         if (currentCharacter == '&') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return CASE;
         }
 
         if (currentCharacter == '@') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return BREAK;
         }
 
         if (currentCharacter == '~') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return DEFAULT;
         }
 
         if (currentCharacter == '\0') {
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
             return NULL_TERMINATOR;
         }
 
-        proceedToNextCharacter();
+        proceedToNextCharacterWithAppend();
         return EXCEPTION;
     }
 
@@ -232,7 +236,7 @@ public class Scanner {
                 isDotUsedAlready = true;
             }
 
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
         }
 
         if (currentSpelling.toString().endsWith(".")) {
@@ -265,9 +269,9 @@ public class Scanner {
 
     private void skipCommentSegment() {
         while (currentCharacter != Source.newLine && currentCharacter != Source.EOT)
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
 
         if (currentCharacter == Source.newLine)
-            proceedToNextCharacter();
+            proceedToNextCharacterWithAppend();
     }
 }

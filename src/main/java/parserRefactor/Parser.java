@@ -5,14 +5,12 @@ import parserRefactor.nodes.Program;
 import parserRefactor.nodes.declaration.Declaration;
 import parserRefactor.nodes.declaration.Declarations;
 import parserRefactor.nodes.declaration.VariableDeclaration;
-import parserRefactor.nodes.expression.BinaryExpression;
-import parserRefactor.nodes.expression.Expression;
-import parserRefactor.nodes.expression.IntegerLiteralExpression;
-import parserRefactor.nodes.expression.UnaryExpression;
+import parserRefactor.nodes.expression.*;
 import parserRefactor.nodes.statement.Statements;
 import parserRefactor.nodes.terminal.Identifier;
 import parserRefactor.nodes.terminal.IntegerLiteral;
 import parserRefactor.nodes.terminal.Operator;
+import parserRefactor.nodes.terminal.StringLiteral;
 import scanner.Token;
 import scanner.TokenKind;
 
@@ -110,6 +108,11 @@ public class Parser {
             return new IntegerLiteralExpression(integerLiteral);
         }
 
+        if (isExpected(STRING_LITERAL)) {
+            var stringLiteral = parseStringLiteral();
+            return new StringLiteralExpression(stringLiteral);
+        }
+
         if (isExpected(OPERATOR)) {
             var operator = parseOperator();
             var expression = parsePrimary();
@@ -130,6 +133,18 @@ public class Parser {
         }
 
         throw new RuntimeException("Integer literal expected.");
+    }
+
+    private StringLiteral parseStringLiteral() {
+        if (isExpected(STRING_LITERAL)) {
+            var stringLiteral = new StringLiteral(currentToken.getSpelling());
+
+            next();
+
+            return stringLiteral;
+        }
+
+        throw new RuntimeException("String literal expected.");
     }
 
     private Operator parseOperator() {
