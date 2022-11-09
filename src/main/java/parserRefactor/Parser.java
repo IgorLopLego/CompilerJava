@@ -9,10 +9,7 @@ import parserRefactor.nodes.expression.*;
 import parserRefactor.nodes.statement.ScreamStatement;
 import parserRefactor.nodes.statement.Statement;
 import parserRefactor.nodes.statement.Statements;
-import parserRefactor.nodes.terminal.Identifier;
-import parserRefactor.nodes.terminal.IntegerLiteral;
-import parserRefactor.nodes.terminal.Operator;
-import parserRefactor.nodes.terminal.StringLiteral;
+import parserRefactor.nodes.terminal.*;
 import scanner.Token;
 import scanner.TokenKind;
 
@@ -132,6 +129,11 @@ public class Parser {
     }
 
     private Expression parsePrimary() {
+        if (isExpected(BOOL_LITERAL)) {
+            var booleanLiteral = parseBooleanLiteral();
+            return new BooleanLiteralExpression(booleanLiteral);
+        }
+
         if (isExpected(LEFT_PARENTHESES)) {
             consume(LEFT_PARENTHESES);
 
@@ -160,6 +162,18 @@ public class Parser {
         }
 
         throw new RuntimeException("Unsupported parsing type. Currently not supporting parsing the '" + currentToken.getKind() + "' type.");
+    }
+
+    private BooleanLiteral parseBooleanLiteral() {
+        if (isExpected(BOOL_LITERAL)) {
+            var booleanLiteral = new BooleanLiteral(currentToken.getSpelling());
+
+            next();
+
+            return booleanLiteral;
+        }
+
+        throw new RuntimeException("Boolean literal expected.");
     }
 
     private IntegerLiteral parseIntegerLiteral() {

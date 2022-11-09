@@ -7,15 +7,13 @@ import parserRefactor.nodes.declaration.Declaration;
 import parserRefactor.nodes.declaration.Declarations;
 import parserRefactor.nodes.declaration.VariableDeclaration;
 import parserRefactor.nodes.expression.BinaryExpression;
+import parserRefactor.nodes.expression.BooleanLiteralExpression;
 import parserRefactor.nodes.expression.IntegerLiteralExpression;
 import parserRefactor.nodes.expression.StringLiteralExpression;
 import parserRefactor.nodes.statement.ScreamStatement;
 import parserRefactor.nodes.statement.Statement;
 import parserRefactor.nodes.statement.Statements;
-import parserRefactor.nodes.terminal.Identifier;
-import parserRefactor.nodes.terminal.IntegerLiteral;
-import parserRefactor.nodes.terminal.Operator;
-import parserRefactor.nodes.terminal.StringLiteral;
+import parserRefactor.nodes.terminal.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -77,6 +75,11 @@ public class ViewerAST extends JFrame {
             treeNode.add(createTree(((VariableDeclaration) node).expression));
         } else if (node instanceof Identifier) {
             treeNode.setUserObject("Identifier "  + ((Identifier) node).spelling);
+        } else if (node instanceof BooleanLiteralExpression) {
+            treeNode.setUserObject("BooleanLiteralExpression");
+            treeNode.add(createTree(((BooleanLiteralExpression) node).literal));
+        } else if (node instanceof BooleanLiteral) {
+            treeNode.setUserObject("BooleanLiteral " + ((BooleanLiteral) node).spelling);
         } else if (node instanceof IntegerLiteralExpression) {
             treeNode.setUserObject("IntegerLiteralExpression");
             treeNode.add(createTree(((IntegerLiteralExpression) node).literal));
