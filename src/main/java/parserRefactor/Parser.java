@@ -33,12 +33,12 @@ public class Parser {
         initParser(tokens);
 
         consume(START);
-        var declarations = parseDeclarations();
-//        var statements = parseStatements();
+
+        var block = parseBlock();
+
         consume(END);
 
-        return new Program(new Block(declarations, new Statements()));
-//        return new Program(new Block(new Declarations(), statements));
+        return new Program(block);
     }
 
     private Block parseBlock() {
