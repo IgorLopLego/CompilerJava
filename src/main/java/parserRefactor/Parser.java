@@ -67,9 +67,6 @@ public class Parser {
             if (isLiteralMatchingType(variableType)) {
                 var literalExpression = parseExpression();
 
-//                var integerLiteral = parseIntegerLiteral();
-//                var integerLiteralExpression = new IntegerLiteralExpression(integerLiteral);
-
                 // Consume the end-of-declaration symbol
                 consume(DOLLAR);
 
