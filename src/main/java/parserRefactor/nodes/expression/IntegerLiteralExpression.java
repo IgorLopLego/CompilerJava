@@ -8,4 +8,9 @@ public class IntegerLiteralExpression extends Expression {
     public IntegerLiteralExpression(IntegerLiteral literal) {
         this.literal = literal;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

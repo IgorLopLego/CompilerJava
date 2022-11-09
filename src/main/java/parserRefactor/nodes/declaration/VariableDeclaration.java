@@ -18,4 +18,9 @@ public class VariableDeclaration extends Declaration {
         this.id = id;
         this.expression = Optional.ofNullable(expression);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

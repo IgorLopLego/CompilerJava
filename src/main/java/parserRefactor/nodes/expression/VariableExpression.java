@@ -8,4 +8,9 @@ public class VariableExpression extends Expression {
     public VariableExpression(Identifier name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

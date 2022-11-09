@@ -21,4 +21,9 @@ public class FunctionDeclaration extends Declaration {
         this.block = block;
         this.returnExpression = returnExpression;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

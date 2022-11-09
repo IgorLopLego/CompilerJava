@@ -3,15 +3,22 @@ package viewer;
 import parserRefactor.nodes.Block;
 import parserRefactor.nodes.Node;
 import parserRefactor.nodes.Program;
-import parserRefactor.nodes.declaration.Declaration;
 import parserRefactor.nodes.declaration.Declarations;
 import parserRefactor.nodes.declaration.FunctionDeclaration;
 import parserRefactor.nodes.declaration.VariableDeclaration;
 import parserRefactor.nodes.expression.*;
 import parserRefactor.nodes.statement.ScreamStatement;
-import parserRefactor.nodes.statement.Statement;
 import parserRefactor.nodes.statement.Statements;
 import parserRefactor.nodes.terminal.*;
+import viewer.treeNode.BlockTreeNode;
+import viewer.treeNode.ProgramTreeNode;
+import viewer.treeNode.declaration.DeclarationsTreeNode;
+import viewer.treeNode.declaration.FunctionDeclarationTreeNode;
+import viewer.treeNode.declaration.VariableDeclarationTreeNode;
+import viewer.treeNode.expression.*;
+import viewer.treeNode.statement.ScreamStatementTreeNode;
+import viewer.treeNode.statement.StatementsTreeNode;
+import viewer.treeNode.terminal.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -44,88 +51,78 @@ public class ViewerAST extends JFrame {
     }
 
     private DefaultMutableTreeNode createTree(Node node) {
-        var treeNode = new DefaultMutableTreeNode("** Unknown node **");
+        if (node == null) {
+            return new DefaultMutableTreeNode("** null **");
+        }
+
+        if (node instanceof BinaryExpression binaryExpression) {
+            return new BinaryExpressionTreeNode(binaryExpression);
+        }
+
+        if (node instanceof Block block) {
+            return new BlockTreeNode(block);
+        }
+
+        if (node instanceof BooleanLiteral booleanLiteral) {
+            return new BooleanLiteralTreeNode(booleanLiteral);
+        }
+
+        if (node instanceof BooleanLiteralExpression booleanLiteralExpression) {
+            return new BooleanLiteralExpressionTreeNode(booleanLiteralExpression);
+        }
+
+        if (node instanceof Declarations declarations) {
+            return new DeclarationsTreeNode(declarations);
+        }
 
         if (node instanceof FunctionDeclaration functionDeclaration) {
-            treeNode.setUserObject("FunctionDeclaration");
-            treeNode.add(createTree(functionDeclaration.name));
-            treeNode.add(createTree(functionDeclaration.parameters));
-            treeNode.add(createTree(functionDeclaration.block));
-            treeNode.add(createTree(functionDeclaration.returnExpression));
+            return new FunctionDeclarationTreeNode(functionDeclaration);
+        }
 
-            return treeNode;
+        if (node instanceof Identifier identifier) {
+            return new IdentifierTreeNode(identifier);
+        }
+
+        if (node instanceof IntegerLiteral integerLiteral) {
+            return new IntegerLiteralTreeNode(integerLiteral);
+        }
+
+        if (node instanceof IntegerLiteralExpression integerLiteralExpression) {
+            return new IntegerLiteralExpressionTreeNode(integerLiteralExpression);
+        }
+
+        if (node instanceof Operator operator) {
+            return new OperatorTreeNode(operator);
+        }
+
+        if (node instanceof Program program) {
+            return new ProgramTreeNode(program);
+        }
+
+        if (node instanceof ScreamStatement screamStatement) {
+            return new ScreamStatementTreeNode(screamStatement);
+        }
+
+        if (node instanceof Statements statements) {
+            return new StatementsTreeNode(statements);
+        }
+
+        if (node instanceof StringLiteral stringLiteral) {
+            return new StringLiteralTreeNode(stringLiteral);
+        }
+
+        if (node instanceof StringLiteralExpression stringLiteralExpression) {
+            return new StringLiteralExpressionTreeNode(stringLiteralExpression);
         }
 
         if (node instanceof VariableDeclaration variableDeclaration) {
-            treeNode.setUserObject("VariableDeclaration");
-            treeNode.add(createTree(variableDeclaration.id));
-
-            variableDeclaration.expression.ifPresent(expression ->
-                    treeNode.add(createTree(expression))
-            );
-
-            return treeNode;
+            return new VariableDeclarationTreeNode(variableDeclaration);
         }
 
         if (node instanceof VariableExpression variableDeclaration) {
-            treeNode.setUserObject("VariableExpression");
-            treeNode.add(createTree(variableDeclaration.name));
-
-            return treeNode;
+            return new VariableExpressionTreeNode(variableDeclaration);
         }
 
-        if (node == null)
-            treeNode.setUserObject("** NULL **");
-        else if (node instanceof Program) {
-            treeNode.setUserObject("Program");
-            treeNode.add(createTree(((Program) node).block));
-        } else if (node instanceof Block) {
-            treeNode.setUserObject("Block");
-            treeNode.add(createTree(((Block) node).declarations));
-            treeNode.add(createTree(((Block) node).statements));
-        } else if (node instanceof Declarations) {
-            treeNode.setUserObject("Declarations");
-
-            for (Declaration declaration: ((Declarations) node).declarations) {
-                treeNode.add(createTree(declaration));
-            }
-        } else if (node instanceof Statements) {
-            treeNode.setUserObject("Statements");
-
-            for (Statement statement: ((Statements) node).statements) {
-                treeNode.add(createTree(statement));
-            }
-        } else if (node instanceof Identifier) {
-            treeNode.setUserObject("Identifier "  + ((Identifier) node).spelling);
-        } else if (node instanceof BooleanLiteralExpression) {
-            treeNode.setUserObject("BooleanLiteralExpression");
-            treeNode.add(createTree(((BooleanLiteralExpression) node).literal));
-        } else if (node instanceof BooleanLiteral) {
-            treeNode.setUserObject("BooleanLiteral " + ((BooleanLiteral) node).spelling);
-        } else if (node instanceof IntegerLiteralExpression) {
-            treeNode.setUserObject("IntegerLiteralExpression");
-            treeNode.add(createTree(((IntegerLiteralExpression) node).literal));
-        } else if (node instanceof IntegerLiteral) {
-            treeNode.setUserObject("IntegerLiteral " + ((IntegerLiteral) node).spelling);
-        } else if (node instanceof StringLiteralExpression) {
-            treeNode.setUserObject("StringLiteralExpression");
-            treeNode.add(createTree(((StringLiteralExpression) node).literal));
-        } else if (node instanceof StringLiteral) {
-            treeNode.setUserObject("StringLiteral " + ((StringLiteral) node).spelling);
-        } else if (node instanceof BinaryExpression) {
-            treeNode.setUserObject( "BinaryExpression" );
-            treeNode.add(createTree(((BinaryExpression) node).leftOperand));
-            treeNode.add(createTree(((BinaryExpression) node).operator));
-            treeNode.add(createTree(((BinaryExpression) node).rightOperand));
-        } else if (node instanceof Operator) {
-            treeNode.setUserObject("Operator " + ((Operator) node).spelling);
-        } else if (node instanceof ScreamStatement) {
-            treeNode.setUserObject("ScreamStatement");
-            treeNode.add(createTree(((ScreamStatement) node).expression));
-        } else {
-            System.out.println("Unknown tree node type: '" + node + "'.");
-        }
-
-        return treeNode;
+        throw new RuntimeException("Unknown tree node type: '" + node + "'.");
     }
 }

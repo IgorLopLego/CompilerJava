@@ -11,4 +11,9 @@ public class Block extends Node {
         this.declarations = declarations;
         this.statements = statements;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

@@ -9,4 +9,8 @@ public class BooleanLiteralExpression extends Expression {
         this.literal = literal;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

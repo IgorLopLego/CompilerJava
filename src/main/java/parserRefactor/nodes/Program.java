@@ -6,4 +6,9 @@ public class Program extends Node {
     public Program(Block block) {
         this.block = block;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

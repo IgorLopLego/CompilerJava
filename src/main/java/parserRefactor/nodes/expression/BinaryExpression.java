@@ -12,4 +12,9 @@ public class BinaryExpression extends Expression {
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }
