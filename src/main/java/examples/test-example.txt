@@ -1,9 +1,0 @@
-start
-
-| That is a small comment
-
-number numberFour # 4 add 2 subtract 6 $
-
-number numberTwo # 2 $
-
-end
