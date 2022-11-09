@@ -7,10 +7,7 @@ import parserRefactor.nodes.declaration.Declaration;
 import parserRefactor.nodes.declaration.Declarations;
 import parserRefactor.nodes.declaration.FunctionDeclaration;
 import parserRefactor.nodes.declaration.VariableDeclaration;
-import parserRefactor.nodes.expression.BinaryExpression;
-import parserRefactor.nodes.expression.BooleanLiteralExpression;
-import parserRefactor.nodes.expression.IntegerLiteralExpression;
-import parserRefactor.nodes.expression.StringLiteralExpression;
+import parserRefactor.nodes.expression.*;
 import parserRefactor.nodes.statement.ScreamStatement;
 import parserRefactor.nodes.statement.Statement;
 import parserRefactor.nodes.statement.Statements;
@@ -49,13 +46,30 @@ public class ViewerAST extends JFrame {
     private DefaultMutableTreeNode createTree(Node node) {
         var treeNode = new DefaultMutableTreeNode("** Unknown node **");
 
-        if (node instanceof FunctionDeclaration) {
+        if (node instanceof FunctionDeclaration functionDeclaration) {
             treeNode.setUserObject("FunctionDeclaration");
+            treeNode.add(createTree(functionDeclaration.name));
+            treeNode.add(createTree(functionDeclaration.parameters));
+            treeNode.add(createTree(functionDeclaration.block));
+            treeNode.add(createTree(functionDeclaration.returnExpression));
 
-            treeNode.add(createTree(((FunctionDeclaration) node).name));
-            treeNode.add(createTree(((FunctionDeclaration) node).parameters));
-            treeNode.add(createTree(((FunctionDeclaration) node).block));
-            treeNode.add(createTree(((FunctionDeclaration) node).returnExpression));
+            return treeNode;
+        }
+
+        if (node instanceof VariableDeclaration variableDeclaration) {
+            treeNode.setUserObject("VariableDeclaration");
+            treeNode.add(createTree(variableDeclaration.id));
+
+            variableDeclaration.expression.ifPresent(expression ->
+                    treeNode.add(createTree(expression))
+            );
+
+            return treeNode;
+        }
+
+        if (node instanceof VariableExpression variableDeclaration) {
+            treeNode.setUserObject("VariableExpression");
+            treeNode.add(createTree(variableDeclaration.name));
 
             return treeNode;
         }
@@ -81,10 +95,6 @@ public class ViewerAST extends JFrame {
             for (Statement statement: ((Statements) node).statements) {
                 treeNode.add(createTree(statement));
             }
-        } else if (node instanceof VariableDeclaration) {
-            treeNode.setUserObject("VariableDeclaration");
-            treeNode.add(createTree(((VariableDeclaration) node).id));
-            treeNode.add(createTree(((VariableDeclaration) node).expression));
         } else if (node instanceof Identifier) {
             treeNode.setUserObject("Identifier "  + ((Identifier) node).spelling);
         } else if (node instanceof BooleanLiteralExpression) {

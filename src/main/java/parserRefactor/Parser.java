@@ -85,20 +85,24 @@ public class Parser {
             // Consume and get the identifier
             var id = parseIdentifier();
 
-            // Consume the assign symbol
-            consume(ASSIGN);
+            if (isExpected(ASSIGN)) {
+                // Consume the assign symbol
+                consume(ASSIGN);
 
-            // Consume the value
-            if (isLiteralMatchingType(variableType)) {
-                var literalExpression = parseExpression();
+                // Consume the value
+                if (isLiteralMatchingType(variableType)) {
+                    var literalExpression = parseExpression();
 
-                // Consume the end-of-declaration symbol
-                consume(DOLLAR);
+                    // Consume the end-of-declaration symbol
+                    consume(DOLLAR);
 
-                return new VariableDeclaration(id, literalExpression);
+                    return new VariableDeclaration(id, literalExpression);
+                }
+
+                throw new RuntimeException("The identifier type is not matching the value type.");
             }
 
-            throw new RuntimeException("The identifier type is not matching the value type.");
+            return new VariableDeclaration(id);
         }
 
         if (isFunctionDeclaration()) {
@@ -112,10 +116,16 @@ public class Parser {
             // Consume function identifier
             var name = parseIdentifier();
 
-            // Consume arguments left parenthesis
+            // Consume parameters left parenthesis
             consume(LEFT_PARENTHESES);
 
-            // Consume arguments right parenthesis
+            Declarations parameters;
+
+            // Check if function has arguments
+            if (isExpected(RIGHT_PARENTHESES)) parameters = new Declarations();
+            else parameters = parseIdentifierList();
+
+            // Consume parameters right parenthesis
             consume(RIGHT_PARENTHESES);
 
             // TODO: parse as function block
@@ -135,7 +145,7 @@ public class Parser {
 
             return new FunctionDeclaration(
                     name,
-                    new Declarations(),
+                    parameters,
                     new Block(new Declarations(), new Statements()),
                     returnExpression
             );
@@ -156,6 +166,20 @@ public class Parser {
         throw new RuntimeException("Identifier expected.");
     }
 
+    private Declarations parseIdentifierList() {
+        var declarations = new Declarations();
+
+        declarations.declarations.add(parseOneDeclaration());
+
+        while (isExpected(COMMA)) {
+            consume(COMMA);
+
+            declarations.declarations.add(parseOneDeclaration());
+        }
+
+        return declarations;
+    }
+
     private Expression parseExpression() {
         var expression = parsePrimary();
 
@@ -170,6 +194,12 @@ public class Parser {
     }
 
     private Expression parsePrimary() {
+        if (isExpected(IDENTIFIER)) {
+            var id = parseIdentifier();
+
+            return new VariableExpression(id);
+        }
+
         if (isExpected(BOOL_LITERAL)) {
             var booleanLiteral = parseBooleanLiteral();
             return new BooleanLiteralExpression(booleanLiteral);
