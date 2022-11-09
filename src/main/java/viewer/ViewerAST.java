@@ -5,6 +5,7 @@ import parserRefactor.nodes.Node;
 import parserRefactor.nodes.Program;
 import parserRefactor.nodes.declaration.Declaration;
 import parserRefactor.nodes.declaration.Declarations;
+import parserRefactor.nodes.declaration.FunctionDeclaration;
 import parserRefactor.nodes.declaration.VariableDeclaration;
 import parserRefactor.nodes.expression.BinaryExpression;
 import parserRefactor.nodes.expression.BooleanLiteralExpression;
@@ -47,6 +48,17 @@ public class ViewerAST extends JFrame {
 
     private DefaultMutableTreeNode createTree(Node node) {
         var treeNode = new DefaultMutableTreeNode("** Unknown node **");
+
+        if (node instanceof FunctionDeclaration) {
+            treeNode.setUserObject("FunctionDeclaration");
+
+            treeNode.add(createTree(((FunctionDeclaration) node).name));
+            treeNode.add(createTree(((FunctionDeclaration) node).parameters));
+            treeNode.add(createTree(((FunctionDeclaration) node).block));
+            treeNode.add(createTree(((FunctionDeclaration) node).returnExpression));
+
+            return treeNode;
+        }
 
         if (node == null)
             treeNode.setUserObject("** NULL **");

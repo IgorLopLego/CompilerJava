@@ -4,6 +4,7 @@ import parserRefactor.nodes.Block;
 import parserRefactor.nodes.Program;
 import parserRefactor.nodes.declaration.Declaration;
 import parserRefactor.nodes.declaration.Declarations;
+import parserRefactor.nodes.declaration.FunctionDeclaration;
 import parserRefactor.nodes.declaration.VariableDeclaration;
 import parserRefactor.nodes.expression.*;
 import parserRefactor.nodes.statement.ScreamStatement;
@@ -32,12 +33,12 @@ public class Parser {
         initParser(tokens);
 
         consume(START);
-        // var declarations = parseDeclarations();
-        var statements = parseStatements();
+        var declarations = parseDeclarations();
+//        var statements = parseStatements();
         consume(END);
 
-        // return new Program(new Block(declarations, new Statements()));
-        return new Program(new Block(new Declarations(), statements));
+        return new Program(new Block(declarations, new Statements()));
+//        return new Program(new Block(new Declarations(), statements));
     }
 
     private Statements parseStatements()
@@ -100,7 +101,47 @@ public class Parser {
             throw new RuntimeException("The identifier type is not matching the value type.");
         }
 
-        throw new RuntimeException("Only variable declaration is supported for now.");
+        if (isFunctionDeclaration()) {
+            // Consume function keyword
+            consume(FUNCTION);
+
+            // Consume function type
+            var functionType = currentToken.getKind();
+            consume(functionType);
+
+            // Consume function identifier
+            var name = parseIdentifier();
+
+            // Consume arguments left parenthesis
+            consume(LEFT_PARENTHESES);
+
+            // Consume arguments right parenthesis
+            consume(RIGHT_PARENTHESES);
+
+            // TODO: parse as function block
+            // Consume function block left parenthesis
+            consume(FUNCTION_LEFT_PARENTHESES);
+
+            consume(RETURN);
+
+            // Return expression
+            var returnExpression = parseExpression();
+
+            // Consume semicolon
+            consume(DOLLAR);
+
+            // Consume function block right parenthesis
+            consume(FUNCTION_RIGHT_PARENTHESES);
+
+            return new FunctionDeclaration(
+                    name,
+                    new Declarations(),
+                    new Block(new Declarations(), new Statements()),
+                    returnExpression
+            );
+        }
+
+        throw new RuntimeException("Unexpected type of declaration. Received: '" + currentToken.getKind() + "'.");
     }
 
     private Identifier parseIdentifier() {
