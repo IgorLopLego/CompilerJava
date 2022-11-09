@@ -24,3 +24,6 @@ buildNumber.properties
 
 # Mac
 .DS_Store
+
+# Example file (development testing file)
+src/main/java/examples/example
