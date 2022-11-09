@@ -41,15 +41,36 @@ public class Parser {
 //        return new Program(new Block(new Declarations(), statements));
     }
 
-    private Statements parseStatements()
-    {
-        Statements stats = new Statements();
+    private Block parseBlock() {
+        var block = new Block(
+                new Declarations(),
+                new Statements()
+        );
 
-        while(currentToken.getKind() == LEFT_PARENTHESES ||
-                currentToken.getKind() == SCREAM )
-            stats.statements.add( parseOneStatement() );
+        while (!isExpected(RETURN) && !isExpected(END) &&
+                (isDeclaration() || isStatement())
+        ) {
+            if (isDeclaration())
+                block.declarations.declarations.addAll(
+                        parseDeclarations().declarations
+                );
 
-        return stats;
+            if (isStatement())
+                block.statements.statements.addAll(
+                        parseStatements().statements
+                );
+        }
+
+        return block;
+    }
+
+    private Statements parseStatements() {
+        var statements = new Statements();
+
+        while (isExpected(LEFT_PARENTHESES) || isExpected(SCREAM))
+            statements.statements.add(parseOneStatement());
+
+        return statements;
     }
 
     private Statement parseOneStatement() {
@@ -128,9 +149,11 @@ public class Parser {
             // Consume parameters right parenthesis
             consume(RIGHT_PARENTHESES);
 
-            // TODO: parse as function block
             // Consume function block left parenthesis
             consume(FUNCTION_LEFT_PARENTHESES);
+
+            // Consume function body
+            var block = parseBlock();
 
             consume(RETURN);
 
@@ -146,7 +169,7 @@ public class Parser {
             return new FunctionDeclaration(
                     name,
                     parameters,
-                    new Block(new Declarations(), new Statements()),
+                    block,
                     returnExpression
             );
         }
@@ -281,6 +304,23 @@ public class Parser {
         }
 
         throw new RuntimeException("Operator expected.");
+    }
+
+    private boolean isStatement() {
+        return isExpression() ||
+                isExpected(RETURN) ||
+                isExpected(SWITCH) ||
+                isExpected(FOR) ||
+                isExpected(SCREAM) ||
+                isExpected(SHOVE);
+    }
+
+    private boolean isExpression() {
+        return isExpected(IDENTIFIER) ||
+                isExpected(NUMBER_LITERAL) ||
+                isExpected(BOOL_LITERAL) ||
+                isExpected(OPERATOR) ||
+                isExpected(STRING_LITERAL);
     }
 
     private boolean isDeclaration() {
