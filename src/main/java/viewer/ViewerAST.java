@@ -9,6 +9,9 @@ import parserRefactor.nodes.declaration.VariableDeclaration;
 import parserRefactor.nodes.expression.BinaryExpression;
 import parserRefactor.nodes.expression.IntegerLiteralExpression;
 import parserRefactor.nodes.expression.StringLiteralExpression;
+import parserRefactor.nodes.statement.ScreamStatement;
+import parserRefactor.nodes.statement.Statement;
+import parserRefactor.nodes.statement.Statements;
 import parserRefactor.nodes.terminal.Identifier;
 import parserRefactor.nodes.terminal.IntegerLiteral;
 import parserRefactor.nodes.terminal.Operator;
@@ -55,11 +58,18 @@ public class ViewerAST extends JFrame {
         } else if (node instanceof Block) {
             treeNode.setUserObject("Block");
             treeNode.add(createTree(((Block) node).declarations));
+            treeNode.add(createTree(((Block) node).statements));
         } else if (node instanceof Declarations) {
             treeNode.setUserObject("Declarations");
 
             for (Declaration declaration: ((Declarations) node).declarations) {
                 treeNode.add(createTree(declaration));
+            }
+        } else if (node instanceof Statements) {
+            treeNode.setUserObject("Statements");
+
+            for (Statement statement: ((Statements) node).statements) {
+                treeNode.add(createTree(statement));
             }
         } else if (node instanceof VariableDeclaration) {
             treeNode.setUserObject("VariableDeclaration");
@@ -84,6 +94,9 @@ public class ViewerAST extends JFrame {
             treeNode.add(createTree(((BinaryExpression) node).rightOperand));
         } else if (node instanceof Operator) {
             treeNode.setUserObject("Operator " + ((Operator) node).spelling);
+        } else if (node instanceof ScreamStatement) {
+            treeNode.setUserObject("ScreamStatement");
+            treeNode.add(createTree(((ScreamStatement) node).expression));
         } else {
             System.out.println("Unknown tree node type: '" + node + "'.");
         }

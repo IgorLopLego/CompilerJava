@@ -6,6 +6,8 @@ import parserRefactor.nodes.declaration.Declaration;
 import parserRefactor.nodes.declaration.Declarations;
 import parserRefactor.nodes.declaration.VariableDeclaration;
 import parserRefactor.nodes.expression.*;
+import parserRefactor.nodes.statement.ScreamStatement;
+import parserRefactor.nodes.statement.Statement;
 import parserRefactor.nodes.statement.Statements;
 import parserRefactor.nodes.terminal.Identifier;
 import parserRefactor.nodes.terminal.IntegerLiteral;
@@ -33,10 +35,37 @@ public class Parser {
         initParser(tokens);
 
         consume(START);
-        var declarations = parseDeclarations();
+        // var declarations = parseDeclarations();
+        var statements = parseStatements();
         consume(END);
 
-        return new Program(new Block(declarations, new Statements()));
+        // return new Program(new Block(declarations, new Statements()));
+        return new Program(new Block(new Declarations(), statements));
+    }
+
+    private Statements parseStatements()
+    {
+        Statements stats = new Statements();
+
+        while(currentToken.getKind() == LEFT_PARENTHESES ||
+                currentToken.getKind() == SCREAM )
+            stats.statements.add( parseOneStatement() );
+
+        return stats;
+    }
+
+    private Statement parseOneStatement() {
+        if (isExpected(SCREAM)) {
+            consume(SCREAM);
+
+            var screamExpression = parseExpression();
+
+            consume(DOLLAR);
+
+            return new ScreamStatement(screamExpression);
+        }
+
+        throw new RuntimeException("Only scream statement is supported for now.");
     }
 
     private Declarations parseDeclarations() {
@@ -103,6 +132,16 @@ public class Parser {
     }
 
     private Expression parsePrimary() {
+        if (isExpected(LEFT_PARENTHESES)) {
+            consume(LEFT_PARENTHESES);
+
+            var expression = parseExpression();
+
+            consume(RIGHT_PARENTHESES);
+
+            return expression;
+        }
+
         if (isExpected(NUMBER_LITERAL)) {
             var integerLiteral = parseIntegerLiteral();
             return new IntegerLiteralExpression(integerLiteral);

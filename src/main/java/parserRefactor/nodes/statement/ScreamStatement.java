@@ -2,10 +2,10 @@ package parserRefactor.nodes.statement;
 
 import parserRefactor.nodes.expression.Expression;
 
-public class SayStatement extends Statement {
+public class ScreamStatement extends Statement {
     public Expression expression;
 
-    public SayStatement(Expression expression) {
+    public ScreamStatement(Expression expression) {
         this.expression = expression;
     }
 }
