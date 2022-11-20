@@ -1,6 +1,6 @@
 package viewer.treeNode.expression;
 
-import parserRefactor.nodes.expression.StringLiteralExpression;
+import parser.node.expression.StringLiteralExpression;
 import viewer.treeNode.terminal.StringLiteralTreeNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;

@@ -1,6 +1,6 @@
 package viewer.treeNode.expression;
 
-import parserRefactor.nodes.expression.BooleanLiteralExpression;
+import parser.node.expression.BooleanLiteralExpression;
 import viewer.treeNode.terminal.BooleanLiteralTreeNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;

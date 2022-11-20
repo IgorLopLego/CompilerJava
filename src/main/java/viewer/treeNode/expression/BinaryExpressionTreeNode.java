@@ -1,6 +1,6 @@
 package viewer.treeNode.expression;
 
-import parserRefactor.nodes.expression.BinaryExpression;
+import parser.node.expression.BinaryExpression;
 import viewer.treeNode.terminal.OperatorTreeNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;

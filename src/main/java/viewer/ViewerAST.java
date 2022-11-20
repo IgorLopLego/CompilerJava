@@ -1,15 +1,15 @@
 package viewer;
 
-import parserRefactor.nodes.Block;
-import parserRefactor.nodes.Node;
-import parserRefactor.nodes.Program;
-import parserRefactor.nodes.declaration.Declarations;
-import parserRefactor.nodes.declaration.FunctionDeclaration;
-import parserRefactor.nodes.declaration.VariableDeclaration;
-import parserRefactor.nodes.expression.*;
-import parserRefactor.nodes.statement.ScreamStatement;
-import parserRefactor.nodes.statement.Statements;
-import parserRefactor.nodes.terminal.*;
+import parser.node.Block;
+import parser.node.Node;
+import parser.node.Program;
+import parser.node.declaration.Declarations;
+import parser.node.declaration.FunctionDeclaration;
+import parser.node.declaration.VariableDeclaration;
+import parser.node.expression.*;
+import parser.node.statement.ScreamStatement;
+import parser.node.statement.Statements;
+import parser.node.terminal.*;
 import viewer.treeNode.BlockTreeNode;
 import viewer.treeNode.ProgramTreeNode;
 import viewer.treeNode.declaration.DeclarationsTreeNode;

@@ -1,6 +1,6 @@
 package viewer.treeNode.terminal;
 
-import parserRefactor.nodes.terminal.BooleanLiteral;
+import parser.node.terminal.BooleanLiteral;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

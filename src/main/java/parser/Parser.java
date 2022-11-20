@@ -1,326 +1,367 @@
 package parser;
 
-import scanner.Scanner;
-import scanner.Token;
-import scanner.TokenKind;
+import parser.node.Block;
+import parser.node.Program;
+import parser.node.declaration.Declaration;
+import parser.node.declaration.Declarations;
+import parser.node.declaration.FunctionDeclaration;
+import parser.node.declaration.VariableDeclaration;
+import parser.node.expression.*;
+import parser.node.statement.ScreamStatement;
+import parser.node.statement.Statement;
+import parser.node.statement.Statements;
+import parser.node.terminal.*;
+import scanner.token.Token;
+import scanner.token.TokenKind;
 
-import static scanner.TokenKind.*;
+import static scanner.token.TokenKind.*;
+
+import java.util.List;
 
 public class Parser {
-    private Scanner scanner;
     private Token currentToken;
+    private int currentTokenIndex;
+    private List<Token> tokens;
 
-   public Parser(Scanner scanner)
-    {
-        this.scanner = scanner;
-        currentToken = scanner.scan();
+    private void initParser(List<Token> tokens) {
+        currentTokenIndex = 0;
+        currentToken = tokens.get(0);
+        this.tokens = tokens;
     }
 
-    public void parseProgram()
-    {
-        accept(START);
-        declarationAndStatementsLoop();
-        accept(END);
-        if( currentToken.getKind() != NULL_TERMINATOR) {
-            System.out.println("Tokens found after end of program");
+    public Program parse(List<Token> tokens) {
+        initParser(tokens);
+
+        consume(START);
+
+        var block = parseBlock();
+
+        consume(END);
+
+        return new Program(block);
+    }
+
+    private Block parseBlock() {
+        var block = new Block(
+                new Declarations(),
+                new Statements()
+        );
+
+        while (!isExpected(RETURN) && !isExpected(END) &&
+                (isDeclaration() || isStatement())
+        ) {
+            if (isDeclaration())
+                block.declarations.declarations.addAll(
+                        parseDeclarations().declarations
+                );
+
+            if (isStatement())
+                block.statements.statements.addAll(
+                        parseStatements().statements
+                );
         }
+
+        return block;
     }
 
-    private void parseStatement(){
-       switch (currentToken.getKind())
-       {
-           case SCREAM:
-               accept(SCREAM);
-               accept(LEFT_PARENTHESES);
-               accept(STRING_LITERAL);
-               accept(RIGHT_PARENTHESES);
-               accept(DOLLAR);
-               break;
-           case FOR:
-               accept(FOR);
-               accept(LEFT_PARENTHESES);
-               accept(NUMBER);
-               accept(IDENTIFIER);
-               accept(ASSIGN);
-               accept(NUMBER_LITERAL);
-               accept(COLON);
-               accept(IDENTIFIER);
-               acceptComparison();
-               accept(NUMBER_LITERAL);
-               accept(COLON);
-               accept(IDENTIFIER);
-               accept(OPERATOR);
-               acceptIdentifierOrNumber();
-               accept(RIGHT_PARENTHESES);
-               accept(LEFT_PARENTHESES);
-               accept(RIGHT_PARENTHESES);
-               break;
-           case SHOVE:
-               accept(SHOVE);
-               accept(LEFT_PARENTHESES);
-               accept(RIGHT_PARENTHESES);
-               accept(DOLLAR);
-               break;
-           case SWITCH:
-               accept(SWITCH);
-               accept(LEFT_PARENTHESES);
-               accept(IDENTIFIER);
-               accept(RIGHT_PARENTHESES);
-               accept(COLON);
-               accept(SWITCH_LEFT_PARENTHESES);
-               while (currentToken.getKind() != SWITCH_RIGHT_PARENTHESES)
-               {
-                   acceptCase();
-               }
-               accept(SWITCH_RIGHT_PARENTHESES);
-               accept(DOLLAR);
-               break;
-           case RETURN:
-               accept(RETURN);
-               acceptReturnArguments();
-               accept(DOLLAR);
-               break;
+    private Statements parseStatements() {
+        var statements = new Statements();
 
-       }
+        while (isExpected(LEFT_PARENTHESES) || isExpected(SCREAM))
+            statements.statements.add(parseOneStatement());
+
+        return statements;
     }
 
-    private void parseAssignDeclaration(){
-        if(currentToken.getKind() == NUMBER || currentToken.getKind() == STRING | currentToken.getKind() == BOOL)
-        {
-            oneDeclaration();
+    private Statement parseOneStatement() {
+        if (isExpected(SCREAM)) {
+            consume(SCREAM);
 
-            while (currentToken.getKind() == COMMA)
-            {
-                accept(COMMA);
-                oneDeclaration();
-            }
-            accept(DOLLAR);
+            var screamExpression = parseExpression();
+
+            consume(DOLLAR);
+
+            return new ScreamStatement(screamExpression);
         }
-        else if(currentToken.getKind() == SEQUENCE)
-        {
-            accept(SEQUENCE);
-            accept(IDENTIFIER);
-            accept(ASSIGN);
-            if(currentToken.getKind() == NUMBER)
-            {
-                accept(NUMBER);
-            }
-            else if(currentToken.getKind() == STRING)
-            {
-                accept(STRING);
-            }
-            else if (currentToken.getKind() == BOOL)
-            {
-                accept(BOOL);
-            }
-            else{
-                accept(EXCEPTION);
-            }
-            accept(DOLLAR);
+
+        throw new RuntimeException("Only scream statement is supported for now.");
+    }
+
+    private Declarations parseDeclarations() {
+        var declarations = new Declarations();
+
+        while (isDeclaration()) {
+            declarations.declarations.add(parseOneDeclaration());
         }
+
+        return declarations;
     }
 
-    private void parseDeclaration(){
-      parseAssignDeclaration();
-       if (currentToken.getKind() == FUNCTION)
-       {
-           accept(FUNCTION);
-           acceptReturnFuncReturnType();
-           accept(IDENTIFIER);
-           accept(LEFT_PARENTHESES);
-           while (currentToken.getKind() != RIGHT_PARENTHESES)
-           {
-              acceptArguments();
-           }
-           accept(RIGHT_PARENTHESES);
-           accept(FUNCTION_LEFT_PARENTHESES);
-           assignDeclarationsAndStatementsLoop();
-           acceptReturnArguments();
-           accept(FUNCTION_RIGHT_PARENTHESES);
-       }
-    }
+    private Declaration parseOneDeclaration() {
+        if (isVariableDeclaration()) {
+            var variableType = currentToken.getKind();
+            // Consume the type of variable
+            consume(variableType);
 
+            // Consume and get the identifier
+            var id = parseIdentifier();
 
-    private void acceptReturnArguments(){
-       if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == STRING_LITERAL || currentToken.getKind() == NUMBER_LITERAL || currentToken.getKind() == BOOL_LITERAL)
-       {
-           accept(currentToken.getKind());
-       }
-    }
+            if (isExpected(ASSIGN)) {
+                // Consume the assign symbol
+                consume(ASSIGN);
 
-    private void acceptArguments(){
-       if(currentToken.getKind() == NUMBER || currentToken.getKind() == STRING || currentToken.getKind() == BOOL)
-       {
-           accept(currentToken.getKind());
-           accept(IDENTIFIER);
-           if(currentToken.getKind() != RIGHT_PARENTHESES) {
-               accept(COMMA);
-           }
-       }
-    }
+                // Consume the value
+                if (isLiteralMatchingType(variableType)) {
+                    var literalExpression = parseExpression();
 
-    private void acceptCase(){
-        accept(CASE);
-        if(isLiteral(currentToken.getKind()))
-        {
-            accept(currentToken.getKind());
-        }
-        else{
-            accept(EXCEPTION);
-        }
-        accept(COLON);
-        assignDeclarationsAndStatementsLoop();
+                    // Consume the end-of-declaration symbol
+                    consume(DOLLAR);
 
-
-        accept(BREAK);
-    }
-
-
-    private void assignDeclarationsAndStatementsLoop(){
-        while (isAssignDeclaration() || isAStatement())
-        {
-            if(isAssignDeclaration())
-            {
-                while (isAssignDeclaration())
-                {
-                   parseAssignDeclaration();
+                    return new VariableDeclaration(id, literalExpression);
                 }
-            }
-            if(isAStatement())
-            {
-                while (isAStatement())
-                {
-                    parseStatement();
-                }
+
+                throw new RuntimeException("The identifier type is not matching the value type.");
             }
 
-        }
-    }
-    private void declarationAndStatementsLoop() {
-        while (isADeclaration() || isAStatement())
-        {
-            if(isADeclaration())
-            {
-                while (isADeclaration())
-                {
-                    parseDeclaration();
-                }
-            }
-            if(isAStatement())
-            {
-                while (isAStatement())
-                {
-                    parseStatement();
-                }
-            }
-
-        }
-    }
-
-
-    private boolean isLiteral(TokenKind tokenKind)
-    {
-        return  tokenKind == BOOL_LITERAL || tokenKind == STRING_LITERAL || tokenKind == NUMBER_LITERAL;
-    }
-    private void acceptIdentifierOrNumber(){
-       if(currentToken.getKind() == IDENTIFIER || currentToken.getKind() == NUMBER_LITERAL)
-       {
-           accept(currentToken.getKind());
-       }
-       else {
-           accept(EXCEPTION);
-       }
-    }
-
-    private void acceptComparison()
-    {
-        if(currentToken.getKind() == LESS || currentToken.getKind() == LESS_OR_EQUAL || currentToken.getKind() == EQUALS || currentToken.getKind() == MORE || currentToken.getKind() == MORE_OR_EQUAL)
-        {
-            accept(currentToken.getKind());
-        }
-        else {
-            accept(EXCEPTION);
-        }
-    }
-
-    private void acceptReturnFuncReturnType()
-    {
-        if(currentToken.getKind() == VOID || currentToken.getKind() == BOOL || currentToken.getKind() == STRING || currentToken.getKind() == NUMBER)
-        {
-            accept(currentToken.getKind());
-        }
-        else {
-            accept(EXCEPTION);
+            return new VariableDeclaration(id);
         }
 
-    }
+        if (isFunctionDeclaration()) {
+            // Consume function keyword
+            consume(FUNCTION);
 
-    private void oneDeclaration() {
-       TokenKind acceptedType = currentToken.getKind();
-       if(acceptedType == NUMBER || acceptedType == BOOL || acceptedType == STRING)
-       {
-           accept(acceptedType);
-       }
-        accept(IDENTIFIER);
-        accept(ASSIGN);
-        while(true) {
-            if (isValidDeclarationToTheTypeVariable(acceptedType)) {
-                accept(currentToken.getKind());
-                if(isCommaOrDollar())
-                {
-                    break;
-                }
-                accept(OPERATOR);
-            }
-            else if (acceptedType == IDENTIFIER)
-            {
-                accept(currentToken.getKind());
-                if(isCommaOrDollar())
-                {
-                    break;
-                }
-                accept(OPERATOR);
-            }
-            else {
-                accept(EXCEPTION);
-                break;
-            }
+            // Consume function type
+            var functionType = currentToken.getKind();
+            consume(functionType);
+
+            // Consume function identifier
+            var name = parseIdentifier();
+
+            // Consume parameters left parenthesis
+            consume(LEFT_PARENTHESES);
+
+            Declarations parameters;
+
+            // Check if function has arguments
+            if (isExpected(RIGHT_PARENTHESES)) parameters = new Declarations();
+            else parameters = parseIdentifierList();
+
+            // Consume parameters right parenthesis
+            consume(RIGHT_PARENTHESES);
+
+            // Consume function block left parenthesis
+            consume(FUNCTION_LEFT_PARENTHESES);
+
+            // Consume function body
+            var block = parseBlock();
+
+            consume(RETURN);
+
+            // Return expression
+            var returnExpression = parseExpression();
+
+            // Consume semicolon
+            consume(DOLLAR);
+
+            // Consume function block right parenthesis
+            consume(FUNCTION_RIGHT_PARENTHESES);
+
+            return new FunctionDeclaration(
+                    name,
+                    parameters,
+                    block,
+                    returnExpression
+            );
         }
+
+        throw new RuntimeException("Unexpected type of declaration. Received: '" + currentToken.getKind() + "'.");
     }
 
-    public boolean isValidDeclarationToTheTypeVariable(TokenKind acceptedType){
-       return (acceptedType == NUMBER && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == NUMBER_LITERAL)) || (acceptedType == BOOL && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == BOOL_LITERAL)) || (acceptedType == STRING && (currentToken.getKind() == IDENTIFIER || currentToken.getKind() == STRING_LITERAL));
-    }
+    private Identifier parseIdentifier() {
+        if (isExpected(IDENTIFIER)) {
+            var id = new Identifier(currentToken.getSpelling());
 
-    public boolean isCommaOrDollar(){
-       return currentToken.getKind() == COMMA || currentToken.getKind() == DOLLAR;
-    }
+            next();
 
-    public boolean isAStatement(){
-        return isAnExpression() || currentToken.getKind() == RETURN || currentToken.getKind() == SWITCH || currentToken.getKind() == FOR || currentToken.getKind() == SCREAM || currentToken.getKind() == SHOVE;
-    }
-
-    private boolean isADeclaration() {
-        return isAssignDeclaration() || currentToken.getKind() == FUNCTION;
-    }
-
-    private boolean isAssignDeclaration(){
-       return currentToken.getKind() == BOOL || currentToken.getKind() == STRING || currentToken.getKind() == NUMBER || currentToken.getKind() == SEQUENCE;
-    }
-
-    private boolean isAnExpression(){
-        return currentToken.getKind() == TokenKind.IDENTIFIER || currentToken.getKind() == TokenKind.NUMBER_LITERAL || currentToken.getKind() == BOOL_LITERAL || currentToken.getKind() == TokenKind.OPERATOR || currentToken.getKind() == TokenKind.STRING_LITERAL;
-    }
-
-
-    private void accept( TokenKind expected )
-    {
-        if( currentToken.getKind() == expected )
-        {
-            System.out.println("Token successfully accepted " + currentToken.getKind());
-            currentToken = scanner.scan();
+            return id;
         }
+
+        throw new RuntimeException("Identifier expected.");
+    }
+
+    private Declarations parseIdentifierList() {
+        var declarations = new Declarations();
+
+        declarations.declarations.add(parseOneDeclaration());
+
+        while (isExpected(COMMA)) {
+            consume(COMMA);
+
+            declarations.declarations.add(parseOneDeclaration());
+        }
+
+        return declarations;
+    }
+
+    private Expression parseExpression() {
+        var expression = parsePrimary();
+
+        while (isExpected(OPERATOR)) {
+            var operator = parseOperator();
+            var temporary = parsePrimary();
+
+            expression = new BinaryExpression(operator, expression, temporary);
+        }
+
+        return expression;
+    }
+
+    private Expression parsePrimary() {
+        if (isExpected(IDENTIFIER)) {
+            var id = parseIdentifier();
+
+            return new VariableExpression(id);
+        }
+
+        if (isExpected(BOOL_LITERAL)) {
+            var booleanLiteral = parseBooleanLiteral();
+            return new BooleanLiteralExpression(booleanLiteral);
+        }
+
+        if (isExpected(LEFT_PARENTHESES)) {
+            consume(LEFT_PARENTHESES);
+
+            var expression = parseExpression();
+
+            consume(RIGHT_PARENTHESES);
+
+            return expression;
+        }
+
+        if (isExpected(NUMBER_LITERAL)) {
+            var integerLiteral = parseIntegerLiteral();
+            return new IntegerLiteralExpression(integerLiteral);
+        }
+
+        if (isExpected(STRING_LITERAL)) {
+            var stringLiteral = parseStringLiteral();
+            return new StringLiteralExpression(stringLiteral);
+        }
+
+        if (isExpected(OPERATOR)) {
+            var operator = parseOperator();
+            var expression = parsePrimary();
+
+            return new UnaryExpression(operator, expression);
+        }
+
+        throw new RuntimeException("Unsupported parsing type. Currently not supporting parsing the '" + currentToken.getKind() + "' type.");
+    }
+
+    private BooleanLiteral parseBooleanLiteral() {
+        if (isExpected(BOOL_LITERAL)) {
+            var booleanLiteral = new BooleanLiteral(currentToken.getSpelling());
+
+            next();
+
+            return booleanLiteral;
+        }
+
+        throw new RuntimeException("Boolean literal expected.");
+    }
+
+    private IntegerLiteral parseIntegerLiteral() {
+        if (isExpected(NUMBER_LITERAL)) {
+            var integerLiteral = new IntegerLiteral(currentToken.getSpelling());
+
+            next();
+
+            return integerLiteral;
+        }
+
+        throw new RuntimeException("Integer literal expected.");
+    }
+
+    private StringLiteral parseStringLiteral() {
+        if (isExpected(STRING_LITERAL)) {
+            var stringLiteral = new StringLiteral(currentToken.getSpelling());
+
+            next();
+
+            return stringLiteral;
+        }
+
+        throw new RuntimeException("String literal expected.");
+    }
+
+    private Operator parseOperator() {
+        if (isExpected(OPERATOR)) {
+            var operator = new Operator(currentToken.getSpelling());
+
+            next();
+
+            return operator;
+        }
+
+        throw new RuntimeException("Operator expected.");
+    }
+
+    private boolean isStatement() {
+        return isExpression() ||
+                isExpected(RETURN) ||
+                isExpected(SWITCH) ||
+                isExpected(FOR) ||
+                isExpected(SCREAM) ||
+                isExpected(SHOVE);
+    }
+
+    private boolean isExpression() {
+        return isExpected(IDENTIFIER) ||
+                isExpected(NUMBER_LITERAL) ||
+                isExpected(BOOL_LITERAL) ||
+                isExpected(OPERATOR) ||
+                isExpected(STRING_LITERAL);
+    }
+
+    private boolean isDeclaration() {
+        return isVariableDeclaration() ||
+                isFunctionDeclaration();
+    }
+
+    private boolean isFunctionDeclaration() {
+        return isExpected(FUNCTION);
+    }
+
+    private boolean isVariableDeclaration() {
+        return isExpected(BOOL) ||
+                isExpected(STRING) ||
+                isExpected(NUMBER) ||
+                isExpected(SEQUENCE);
+    }
+
+    private boolean isLiteralMatchingType(TokenKind type) {
+        if (type == NUMBER && isExpected(NUMBER_LITERAL))
+            return true;
+        else if (type == STRING && isExpected(STRING_LITERAL))
+            return true;
         else
-            System.out.println( "Expected token of kind " + expected + " and actually got " + currentToken.getKind() );
+            return type == BOOL && isExpected(BOOL_LITERAL);
+    }
+
+    private void consume(TokenKind expected) {
+        if (isExpected(expected)) {
+            if (currentTokenIndex + 1 != tokens.size())
+                next();
+        } else {
+            throw new RuntimeException("Tried to consume an unexpected token. Expected '" + expected + "', but received '" + currentToken.getKind() + "'.");
+        }
+    }
+
+    private void next() {
+        currentToken = this.tokens.get(++currentTokenIndex);
+    }
+
+    private boolean isExpected(TokenKind expected) {
+        return expected == currentToken.getKind();
     }
 }

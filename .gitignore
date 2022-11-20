@@ -27,6 +27,4 @@ buildNumber.properties
 
 # Example file (development testing file)
 src/main/java/examples/example*
-src/main/java/examples/example*.txt
 src/main/java/examples/test*
-src/main/java/examples/test*.txt

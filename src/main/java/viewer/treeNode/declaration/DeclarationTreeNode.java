@@ -1,8 +1,8 @@
 package viewer.treeNode.declaration;
 
-import parserRefactor.nodes.declaration.Declaration;
-import parserRefactor.nodes.declaration.FunctionDeclaration;
-import parserRefactor.nodes.declaration.VariableDeclaration;
+import parser.node.declaration.Declaration;
+import parser.node.declaration.FunctionDeclaration;
+import parser.node.declaration.VariableDeclaration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

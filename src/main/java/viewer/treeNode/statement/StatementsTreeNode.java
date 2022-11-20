@@ -1,7 +1,7 @@
 package viewer.treeNode.statement;
 
-import parserRefactor.nodes.statement.Statement;
-import parserRefactor.nodes.statement.Statements;
+import parser.node.statement.Statement;
+import parser.node.statement.Statements;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

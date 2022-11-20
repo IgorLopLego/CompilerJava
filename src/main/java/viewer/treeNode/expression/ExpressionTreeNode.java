@@ -1,6 +1,6 @@
 package viewer.treeNode.expression;
 
-import parserRefactor.nodes.expression.*;
+import parser.node.expression.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

@@ -1,6 +1,6 @@
 package viewer.treeNode.declaration;
 
-import parserRefactor.nodes.declaration.FunctionDeclaration;
+import parser.node.declaration.FunctionDeclaration;
 import viewer.treeNode.BlockTreeNode;
 import viewer.treeNode.expression.ExpressionTreeNode;
 import viewer.treeNode.terminal.IdentifierTreeNode;

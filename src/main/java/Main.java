@@ -1,6 +1,6 @@
-import parserRefactor.Parser;
-import scannerRefactor.Scanner;
-import scanner.Source;
+import parser.Parser;
+import scanner.Scanner;
+import utils.Source;
 import utils.Path;
 import viewer.ViewerAST;
 
@@ -13,9 +13,10 @@ public class Main {
 
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             var source = new Source(fileChooser.getSelectedFile().getAbsolutePath());
-            var scanner = new Scanner(source);
 
-            var tokens = scanner.scanSource();
+            var scanner = new Scanner();
+
+            var tokens = scanner.scan(source);
             scanner.printTokens();
 
             var parser = new Parser();

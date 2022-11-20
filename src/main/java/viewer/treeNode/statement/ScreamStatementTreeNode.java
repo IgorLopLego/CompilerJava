@@ -1,6 +1,6 @@
 package viewer.treeNode.statement;
 
-import parserRefactor.nodes.statement.ScreamStatement;
+import parser.node.statement.ScreamStatement;
 import viewer.treeNode.expression.ExpressionTreeNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
