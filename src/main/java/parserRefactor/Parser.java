@@ -106,6 +106,8 @@ public class Parser {
             // Consume and get the identifier
             var id = parseIdentifier();
 
+            if (isExpected(DOLLAR)) return new VariableDeclaration(id);
+
             if (isExpected(ASSIGN)) {
                 // Consume the assign symbol
                 consume(ASSIGN);
@@ -123,7 +125,7 @@ public class Parser {
                 throw new RuntimeException("The identifier type is not matching the value type.");
             }
 
-            return new VariableDeclaration(id);
+            throw new RuntimeException("Expected to encounter the assign operator.");
         }
 
         if (isFunctionDeclaration()) {
