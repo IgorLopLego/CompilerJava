@@ -130,28 +130,6 @@ class ScannerTest {
     }
 
     @Test
-    void shouldDeclareNegativeFloatingPoint() {
-        var sourcePath = getTestScopeExamplePath("correctFloatingPointNumberDeclaration.stricty");
-        var source = new Source(sourcePath);
-
-        var sourceTokens = getTokensFromSource(source);
-
-        var testTokens = new ArrayList<Token>() {
-            {
-                add(new Token(START, "start"));
-                add(new Token(NUMBER, "number"));
-                add(new Token(IDENTIFIER, "numberFour"));
-                add(new Token(ASSIGN, "#"));
-                add(new Token(NUMBER_LITERAL, "-99.9"));
-                add(new Token(DOLLAR, "$"));
-                add(new Token(END, "end"));
-            }
-        };
-
-        assertArrayEquals(testTokens.toArray(), sourceTokens.toArray());
-    }
-
-    @Test
     void shouldDetectScream(){
         var sourcePath = getTestScopeExamplePath("scream.stricty");
         var source = new Source(sourcePath);
@@ -227,14 +205,6 @@ class ScannerTest {
         };
 
         assertArrayEquals(testTokens.toArray(), sourceTokens.toArray());
-    }
-
-    @Test
-    void shouldThrowAnErrorWhenIncorrectFloatingPointIsThrown() {
-        var sourcePath = getTestScopeExamplePath("incorrectFloatingPointNumberDeclaration.stricty");
-        var source = new Source(sourcePath);
-
-        assertTrue(hasException(source));
     }
 
     @Test
