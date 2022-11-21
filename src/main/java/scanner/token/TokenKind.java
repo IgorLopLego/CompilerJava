@@ -14,6 +14,7 @@ public enum TokenKind {
     FUNCTION("exeFunc"),
     IF("inCase"),
     ELSE ("otherwise"),
+    WHILE("till"),
     SCREAM("scream"),
     SHOVE("shove"),
     VOID("void"),
