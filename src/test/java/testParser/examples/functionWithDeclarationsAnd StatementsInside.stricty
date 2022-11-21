@@ -1,0 +1,8 @@
+start
+exeFunc boolean igorsFunc[number one, boolean two, string three]
+(
+number positiveIgor # 99.9 $
+scream[`hello world`] $
+<- negativeIgor $
+)
+end

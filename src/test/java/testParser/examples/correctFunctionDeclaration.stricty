@@ -1,0 +1,6 @@
+start
+exeFunc boolean igorsFunc[number one, boolean two, string three]
+(
+ <- true
+)
+end

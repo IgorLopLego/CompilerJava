@@ -1,0 +1,6 @@
+start
+
+| number one # 1 $
+| string two # `two`$
+
+end
