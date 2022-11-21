@@ -128,26 +128,6 @@ public class Scanner {
             return RIGHT_PARENTHESES;
         }
 
-        if (currentCharacter == '{') {
-            proceedToNextCharacterWithAppend();
-            return SWITCH_LEFT_PARENTHESES;
-        }
-
-        if (currentCharacter == '}') {
-            proceedToNextCharacterWithAppend();
-            return SWITCH_RIGHT_PARENTHESES;
-        }
-
-        if (currentCharacter == '?') {
-            proceedToNextCharacterWithAppend();
-            return QUESTION;
-        }
-
-        if (currentCharacter == ':') {
-            proceedToNextCharacterWithAppend();
-            return COLON;
-        }
-
         if (currentCharacter == '<') {
             proceedToNextCharacterWithAppend();
 
@@ -201,21 +181,6 @@ public class Scanner {
 
                 proceedToNextCharacterWithAppend();
             }
-        }
-
-        if (currentCharacter == '&') {
-            proceedToNextCharacterWithAppend();
-            return CASE;
-        }
-
-        if (currentCharacter == '@') {
-            proceedToNextCharacterWithAppend();
-            return BREAK;
-        }
-
-        if (currentCharacter == '~') {
-            proceedToNextCharacterWithAppend();
-            return DEFAULT;
         }
 
         if (currentCharacter == '\0') {

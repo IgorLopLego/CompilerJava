@@ -1,0 +1,16 @@
+start
+number amount # 9 $
+inCase[amount == 9]
+(
+scream[`lala`] $
+)
+otherwise inCase[amount == 8]
+(
+scream[`haha`] $
+)
+otherwise
+(
+scream[`igor`] $
+)
+
+end

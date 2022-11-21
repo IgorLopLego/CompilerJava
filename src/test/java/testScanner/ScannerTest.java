@@ -215,6 +215,62 @@ class ScannerTest {
         assertTrue(hasException(source));
     }
 
+    @Test
+    void shouldDetectIfElse(){
+        var sourcePath = getTestScopeExamplePath("conditionIfElse.stricty");
+        var source = new Source(sourcePath);
+
+        var sourceTokens = getTokensFromSource(source);
+        var testTokens = new ArrayList<Token>() {
+            {
+                add(new Token(START, "start"));
+                add(new Token(NUMBER, "number"));
+                add(new Token(IDENTIFIER, "amount"));
+                add(new Token(ASSIGN, "#"));
+                add(new Token(NUMBER_LITERAL, "9"));
+                add(new Token(DOLLAR, "$"));
+                add(new Token(IF, "inCase"));
+                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(IDENTIFIER, "amount"));
+                add(new Token(EQUALS, "=="));
+                add(new Token(NUMBER_LITERAL, "9"));
+                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(SCREAM, "scream"));
+                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(STRING_LITERAL, "lala"));
+                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(DOLLAR, "$"));
+                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(ELSE, "otherwise"));
+                add(new Token(IF, "inCase"));
+                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(IDENTIFIER, "amount"));
+                add(new Token(EQUALS, "=="));
+                add(new Token(NUMBER_LITERAL, "8"));
+                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(SCREAM, "scream"));
+                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(STRING_LITERAL, "haha"));
+                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(DOLLAR, "$"));
+                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(ELSE, "otherwise"));
+                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(SCREAM, "scream"));
+                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(STRING_LITERAL, "igor"));
+                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(DOLLAR, "$"));
+                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(END, "end"));
+            }
+        };
+
+        assertArrayEquals(testTokens.toArray(), sourceTokens.toArray());
+    }
+
 
      boolean hasException(Source source)
      {
