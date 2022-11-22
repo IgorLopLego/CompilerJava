@@ -1,0 +1,8 @@
+start
+number counter # 0 $
+till[counter < 9]
+(
+scream[`hehe` add counter] $
+counter # counter add 1 $
+)
+end

@@ -309,8 +309,8 @@ public class Parser {
     private boolean isStatement() {
         return isExpression() ||
                 isExpected(RETURN) ||
-                isExpected(SWITCH) ||
-                isExpected(FOR) ||
+                isExpected(IF) ||
+                isExpected(ELSE) ||
                 isExpected(SCREAM) ||
                 isExpected(SHOVE);
     }
@@ -335,8 +335,7 @@ public class Parser {
     private boolean isVariableDeclaration() {
         return isExpected(BOOL) ||
                 isExpected(STRING) ||
-                isExpected(NUMBER) ||
-                isExpected(SEQUENCE);
+                isExpected(NUMBER);
     }
 
     private boolean isLiteralMatchingType(TokenKind type) {

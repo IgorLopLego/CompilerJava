@@ -6,10 +6,10 @@ import static scanner.token.TokenKind.OPERATOR;
 
 public class Token {
     private TokenKind kind;
-    private String spelling;
-    private static final String additionOperator[] = {"add", "subtract"};
-    private static final String multiplicationOperators[] = {"multiplication", "division", "module"};
-    private static final TokenKind[] KEYWORDS = {TokenKind.DOLLAR, TokenKind.START, TokenKind.END, TokenKind.FOR, TokenKind.SWITCH, TokenKind.FUNCTION, TokenKind.SCREAM, TokenKind.FOLLOWING, TokenKind.BOOL, TokenKind.STRING, TokenKind.NUMBER, TokenKind.SHOVE, TokenKind.SEQUENCE, TokenKind.VOID};
+    private final String spelling;
+    private static final String[] additionOperator = {"add", "subtract"};
+    private static final String[] multiplicationOperators = {"multiplication", "division", "module"};
+    private static final TokenKind[] KEYWORDS = {TokenKind.DOLLAR, TokenKind.START, TokenKind.END, TokenKind.IF, TokenKind.ELSE, TokenKind.FUNCTION, TokenKind.SCREAM,  TokenKind.BOOL, TokenKind.STRING, TokenKind.NUMBER, TokenKind.SHOVE,  TokenKind.VOID, TokenKind.WHILE};
 
 
     public Token(TokenKind kind, String spelling)
@@ -44,15 +44,7 @@ public class Token {
         return null;
     }
 
-    public boolean isAddOperator()
-    {
-        if( kind == OPERATOR )
-            return containsOperator( spelling, additionOperator);
-        else
-            return false;
-    }
-
-    private boolean containsOperator( String spelling, String operations[] ) {
+    private boolean containsOperator(String spelling, String[] operations) {
 
         for (String operation : operations)
             if (spelling.equals(operation))
