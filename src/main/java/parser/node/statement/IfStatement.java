@@ -1,19 +1,20 @@
 package parser.node.statement;
 
+import parser.node.Block;
 import parser.node.expression.Expression;
 
 public class IfStatement extends Statement {
     public Expression expression;
-    public Statements thenSection;
-    public Statements elseSection;
+    public Block ifSection;
+    public Block elseSection;
 
     public IfStatement(
             Expression expression,
-            Statements thenSection,
-            Statements elseSection
+            Block ifSection,
+            Block elseSection
     ) {
         this.expression = expression;
-        this.thenSection = thenSection;
+        this.ifSection = ifSection;
         this.elseSection = elseSection;
     }
 

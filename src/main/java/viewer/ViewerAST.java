@@ -10,6 +10,7 @@ import parser.node.expression.*;
 import parser.node.statement.IfStatement;
 import parser.node.statement.ScreamStatement;
 import parser.node.statement.Statements;
+import parser.node.statement.WhileStatement;
 import parser.node.terminal.*;
 import viewer.treeNode.BlockTreeNode;
 import viewer.treeNode.ProgramTreeNode;
@@ -20,6 +21,7 @@ import viewer.treeNode.expression.*;
 import viewer.treeNode.statement.IfStatementTreeNode;
 import viewer.treeNode.statement.ScreamStatementTreeNode;
 import viewer.treeNode.statement.StatementsTreeNode;
+import viewer.treeNode.statement.WhileStatementTreeNode;
 import viewer.treeNode.terminal.*;
 
 import javax.swing.*;
@@ -127,6 +129,10 @@ public class ViewerAST extends JFrame {
 
         if (node instanceof VariableExpression variableDeclaration) {
             return new VariableExpressionTreeNode(variableDeclaration);
+        }
+
+        if (node instanceof WhileStatement whileStatement) {
+            return new WhileStatementTreeNode(whileStatement);
         }
 
         throw new RuntimeException("Unknown tree node type: '" + node + "'.");

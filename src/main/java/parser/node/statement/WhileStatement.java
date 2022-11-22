@@ -1,13 +1,19 @@
 package parser.node.statement;
 
+import parser.node.Block;
 import parser.node.expression.Expression;
 
 public class WhileStatement extends Statement {
     public Expression expression;
-    public Statements statements;
+    public Block block;
 
-    public WhileStatement(Expression expression, Statements statements) {
+    public WhileStatement(Expression expression, Block block) {
         this.expression = expression;
-        this.statements = statements;
+        this.block = block;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

@@ -8,10 +8,7 @@ import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.VariableDeclaration;
 import parser.node.expression.*;
-import parser.node.statement.IfStatement;
-import parser.node.statement.ScreamStatement;
-import parser.node.statement.Statement;
-import parser.node.statement.Statements;
+import parser.node.statement.*;
 import parser.node.terminal.*;
 import scanner.token.Token;
 import scanner.token.TokenKind;
@@ -69,7 +66,7 @@ public class Parser {
     private Statements parseStatements() {
         var statements = new Statements();
 
-        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF))
+        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF) || isExpected(WHILE))
             statements.statements.add(parseOneStatement());
 
         if (statements.statements.isEmpty())
@@ -96,23 +93,37 @@ public class Parser {
 
             consume(ROUND_LEFT_PARENTHESES);
 
-            var statements = parseStatements();
+            var ifBlock = parseBlock();
 
             consume(ROUND_RIGHT_PARENTHESES);
 
-            Statements elseStatement = new Statements();
+            Block elseBlock = null;
 
             if (isExpected(ELSE)) {
                 consume(ELSE);
 
                 consume(ROUND_LEFT_PARENTHESES);
 
-                elseStatement = parseStatements();
+                elseBlock = parseBlock();
 
                 consume(ROUND_RIGHT_PARENTHESES);
             }
 
-            return new IfStatement(ifExpression, statements, elseStatement);
+            return new IfStatement(ifExpression, ifBlock, elseBlock);
+        }
+
+        if (isExpected(WHILE)) {
+            consume(WHILE);
+
+            var expression = parseExpression();
+
+            consume(ROUND_LEFT_PARENTHESES);
+
+            var block = parseBlock();
+
+            consume(ROUND_RIGHT_PARENTHESES);
+
+            return new WhileStatement(expression, block);
         }
 
         throw new RuntimeException("Only scream statement is supported for now.");
@@ -340,6 +351,7 @@ public class Parser {
     private boolean isStatement() {
         return isExpression() ||
                 isExpected(RETURN) ||
+                isExpected(WHILE) ||
                 isExpected(IF) ||
                 isExpected(ELSE) ||
                 isExpected(SCREAM) ||

@@ -1,6 +1,7 @@
 package viewer.treeNode.statement;
 
 import parser.node.statement.IfStatement;
+import viewer.treeNode.BlockTreeNode;
 import viewer.treeNode.expression.ExpressionTreeNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -10,7 +11,7 @@ public class IfStatementTreeNode extends DefaultMutableTreeNode {
         super(node);
 
         super.add(ExpressionTreeNode.get(node.expression));
-        super.add(new StatementsTreeNode(node.thenSection));
-        super.add(new StatementsTreeNode(node.elseSection));
+        super.add(new BlockTreeNode(node.ifSection));
+        super.add(new BlockTreeNode(node.elseSection));
     }
 }
