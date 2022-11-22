@@ -100,7 +100,19 @@ public class Parser {
 
             consume(ROUND_RIGHT_PARENTHESES);
 
-            return new IfStatement(ifExpression, statements, new Statements());
+            Statements elseStatement = new Statements();
+
+            if (isExpected(ELSE)) {
+                consume(ELSE);
+
+                consume(ROUND_LEFT_PARENTHESES);
+
+                elseStatement = parseStatements();
+
+                consume(ROUND_RIGHT_PARENTHESES);
+            }
+
+            return new IfStatement(ifExpression, statements, elseStatement);
         }
 
         throw new RuntimeException("Only scream statement is supported for now.");
