@@ -16,4 +16,9 @@ public class IfStatement extends Statement {
         this.thenSection = thenSection;
         this.elseSection = elseSection;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

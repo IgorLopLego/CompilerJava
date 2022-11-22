@@ -110,22 +110,22 @@ public class Scanner {
 
         if (currentCharacter == '(') {
             proceedToNextCharacterWithAppend();
-            return FUNCTION_LEFT_PARENTHESES;
+            return ROUND_LEFT_PARENTHESES;
         }
 
         if (currentCharacter == ')') {
             proceedToNextCharacterWithAppend();
-            return FUNCTION_RIGHT_PARENTHESES;
+            return ROUND_RIGHT_PARENTHESES;
         }
 
         if (currentCharacter == '[') {
             proceedToNextCharacterWithAppend();
-            return LEFT_PARENTHESES;
+            return SQUARE_LEFT_PARENTHESES;
         }
 
         if (currentCharacter == ']') {
             proceedToNextCharacterWithAppend();
-            return RIGHT_PARENTHESES;
+            return SQUARE_RIGHT_PARENTHESES;
         }
 
         if (currentCharacter == '<') {

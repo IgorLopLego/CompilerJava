@@ -7,6 +7,7 @@ import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.VariableDeclaration;
 import parser.node.expression.*;
+import parser.node.statement.IfStatement;
 import parser.node.statement.ScreamStatement;
 import parser.node.statement.Statements;
 import parser.node.terminal.*;
@@ -16,6 +17,7 @@ import viewer.treeNode.declaration.DeclarationsTreeNode;
 import viewer.treeNode.declaration.FunctionDeclarationTreeNode;
 import viewer.treeNode.declaration.VariableDeclarationTreeNode;
 import viewer.treeNode.expression.*;
+import viewer.treeNode.statement.IfStatementTreeNode;
 import viewer.treeNode.statement.ScreamStatementTreeNode;
 import viewer.treeNode.statement.StatementsTreeNode;
 import viewer.treeNode.terminal.*;
@@ -52,7 +54,7 @@ public class ViewerAST extends JFrame {
 
     private DefaultMutableTreeNode createTree(Node node) {
         if (node == null) {
-            return new DefaultMutableTreeNode("** null **");
+            return new DefaultMutableTreeNode("Null node");
         }
 
         if (node instanceof BinaryExpression binaryExpression) {
@@ -81,6 +83,10 @@ public class ViewerAST extends JFrame {
 
         if (node instanceof Identifier identifier) {
             return new IdentifierTreeNode(identifier);
+        }
+
+        if (node instanceof IfStatement ifStatement) {
+            return new IfStatementTreeNode(ifStatement);
         }
 
         if (node instanceof IntegerLiteral integerLiteral) {

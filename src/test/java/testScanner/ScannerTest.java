@@ -140,9 +140,9 @@ class ScannerTest {
             {
                 add(new Token(START, "start"));
                 add(new Token(SCREAM, "scream"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(STRING_LITERAL, "hello world"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
                 add(new Token(DOLLAR, "$"));
                 add(new Token(END, "end"));
             }
@@ -162,8 +162,8 @@ class ScannerTest {
             {
                 add(new Token(START, "start"));
                 add(new Token(SHOVE, "shove"));
-                add(new Token(LEFT_PARENTHESES, "["));
-                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
                 add(new Token(DOLLAR, "$"));
                 add(new Token(END, "end"));
             }
@@ -185,7 +185,7 @@ class ScannerTest {
                 add(new Token(FUNCTION, "exeFunc"));
                 add(new Token(BOOL, "boolean"));
                 add(new Token(IDENTIFIER, "igorsFunc"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(NUMBER, "number"));
                 add(new Token(IDENTIFIER, "one"));
                 add(new Token(COMMA, ","));
@@ -194,12 +194,12 @@ class ScannerTest {
                 add(new Token(COMMA, ","));
                 add(new Token(STRING, "string"));
                 add(new Token(IDENTIFIER, "three"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
-                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
+                add(new Token(ROUND_LEFT_PARENTHESES, "("));
                 add(new Token(RETURN, "<-"));
                 add(new Token(BOOL_LITERAL, "true"));
                 add(new Token(DOLLAR, "$"));
-                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(ROUND_RIGHT_PARENTHESES, ")"));
                 add(new Token(END, "end"));
             }
         };
@@ -230,40 +230,40 @@ class ScannerTest {
                 add(new Token(NUMBER_LITERAL, "9"));
                 add(new Token(DOLLAR, "$"));
                 add(new Token(IF, "inCase"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(IDENTIFIER, "amount"));
                 add(new Token(EQUALS, "=="));
                 add(new Token(NUMBER_LITERAL, "9"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
-                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
+                add(new Token(ROUND_LEFT_PARENTHESES, "("));
                 add(new Token(SCREAM, "scream"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(STRING_LITERAL, "lala"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
                 add(new Token(DOLLAR, "$"));
-                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(ROUND_RIGHT_PARENTHESES, ")"));
                 add(new Token(ELSE, "otherwise"));
                 add(new Token(IF, "inCase"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(IDENTIFIER, "amount"));
                 add(new Token(EQUALS, "=="));
                 add(new Token(NUMBER_LITERAL, "8"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
-                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
+                add(new Token(ROUND_LEFT_PARENTHESES, "("));
                 add(new Token(SCREAM, "scream"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(STRING_LITERAL, "haha"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
                 add(new Token(DOLLAR, "$"));
-                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(ROUND_RIGHT_PARENTHESES, ")"));
                 add(new Token(ELSE, "otherwise"));
-                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(ROUND_LEFT_PARENTHESES, "("));
                 add(new Token(SCREAM, "scream"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(STRING_LITERAL, "igor"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
                 add(new Token(DOLLAR, "$"));
-                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(ROUND_RIGHT_PARENTHESES, ")"));
                 add(new Token(END, "end"));
             }
         };
@@ -287,18 +287,18 @@ class ScannerTest {
                 add(new Token(NUMBER_LITERAL, "0"));
                 add(new Token(DOLLAR, "$"));
                 add(new Token(WHILE, "till"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(IDENTIFIER, "counter"));
                 add(new Token(LESS, "<"));
                 add(new Token(NUMBER_LITERAL, "9"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
-                add(new Token(FUNCTION_LEFT_PARENTHESES, "("));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
+                add(new Token(ROUND_LEFT_PARENTHESES, "("));
                 add(new Token(SCREAM, "scream"));
-                add(new Token(LEFT_PARENTHESES, "["));
+                add(new Token(SQUARE_LEFT_PARENTHESES, "["));
                 add(new Token(STRING_LITERAL, "hehe"));
                 add(new Token(OPERATOR, "add"));
                 add(new Token(IDENTIFIER, "counter"));
-                add(new Token(RIGHT_PARENTHESES, "]"));
+                add(new Token(SQUARE_RIGHT_PARENTHESES, "]"));
                 add(new Token(DOLLAR, "$"));
                 add(new Token(IDENTIFIER, "counter"));
                 add(new Token(ASSIGN, "#"));
@@ -306,7 +306,7 @@ class ScannerTest {
                 add(new Token(OPERATOR, "add"));
                 add(new Token(NUMBER_LITERAL, "1"));
                 add(new Token(DOLLAR, "$"));
-                add(new Token(FUNCTION_RIGHT_PARENTHESES, ")"));
+                add(new Token(ROUND_RIGHT_PARENTHESES, ")"));
                 add(new Token(END, "end"));
             }
         };

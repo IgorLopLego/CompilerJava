@@ -1,12 +1,14 @@
 package parser;
 
 import parser.node.Block;
+import parser.node.Node;
 import parser.node.Program;
 import parser.node.declaration.Declaration;
 import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.VariableDeclaration;
 import parser.node.expression.*;
+import parser.node.statement.IfStatement;
 import parser.node.statement.ScreamStatement;
 import parser.node.statement.Statement;
 import parser.node.statement.Statements;
@@ -29,7 +31,7 @@ public class Parser {
         this.tokens = tokens;
     }
 
-    public Program parse(List<Token> tokens) {
+    public Node parse(List<Token> tokens) {
         initParser(tokens);
 
         consume(START);
@@ -67,8 +69,11 @@ public class Parser {
     private Statements parseStatements() {
         var statements = new Statements();
 
-        while (isExpected(LEFT_PARENTHESES) || isExpected(SCREAM))
+        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF))
             statements.statements.add(parseOneStatement());
+
+        if (statements.statements.isEmpty())
+            throw new RuntimeException("Cannot parse the '" + currentToken.getKind() + "' token.");
 
         return statements;
     }
@@ -82,6 +87,20 @@ public class Parser {
             consume(DOLLAR);
 
             return new ScreamStatement(screamExpression);
+        }
+
+        if (isExpected(IF)) {
+            consume(IF);
+
+            var ifExpression = parseExpression();
+
+            consume(ROUND_LEFT_PARENTHESES);
+
+            var statements = parseStatements();
+
+            consume(ROUND_RIGHT_PARENTHESES);
+
+            return new IfStatement(ifExpression, statements, new Statements());
         }
 
         throw new RuntimeException("Only scream statement is supported for now.");
@@ -138,19 +157,19 @@ public class Parser {
             var name = parseIdentifier();
 
             // Consume parameters left parenthesis
-            consume(LEFT_PARENTHESES);
+            consume(SQUARE_LEFT_PARENTHESES);
 
             Declarations parameters;
 
             // Check if function has arguments
-            if (isExpected(RIGHT_PARENTHESES)) parameters = new Declarations();
+            if (isExpected(SQUARE_RIGHT_PARENTHESES)) parameters = new Declarations();
             else parameters = parseIdentifierList();
 
             // Consume parameters right parenthesis
-            consume(RIGHT_PARENTHESES);
+            consume(SQUARE_RIGHT_PARENTHESES);
 
             // Consume function block left parenthesis
-            consume(FUNCTION_LEFT_PARENTHESES);
+            consume(ROUND_LEFT_PARENTHESES);
 
             // Consume function body
             var block = parseBlock();
@@ -164,7 +183,7 @@ public class Parser {
             consume(DOLLAR);
 
             // Consume function block right parenthesis
-            consume(FUNCTION_RIGHT_PARENTHESES);
+            consume(ROUND_RIGHT_PARENTHESES);
 
             return new FunctionDeclaration(
                     name,
@@ -228,12 +247,12 @@ public class Parser {
             return new BooleanLiteralExpression(booleanLiteral);
         }
 
-        if (isExpected(LEFT_PARENTHESES)) {
-            consume(LEFT_PARENTHESES);
+        if (isExpected(SQUARE_LEFT_PARENTHESES)) {
+            consume(SQUARE_LEFT_PARENTHESES);
 
             var expression = parseExpression();
 
-            consume(RIGHT_PARENTHESES);
+            consume(SQUARE_RIGHT_PARENTHESES);
 
             return expression;
         }
