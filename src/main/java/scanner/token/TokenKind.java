@@ -21,6 +21,7 @@ public enum TokenKind {
     BOOL("boolean"),
     STRING("string"),
     NUMBER("number"),
+    STRUCT("struct"),
     ASSIGN("#"),
     COMMA(","),
     DOLLAR("$"),
