@@ -5,8 +5,8 @@ import parser.node.Node;
 import parser.node.Program;
 import parser.node.declaration.Declaration;
 import parser.node.declaration.Declarations;
-import parser.node.declaration.FunctionDeclaration;
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.DeclarationFunctionAssign;
+import parser.node.declaration.DeclarationVariableAssign;
 import parser.node.expression.*;
 import parser.node.statement.*;
 import parser.node.terminal.*;
@@ -50,9 +50,22 @@ public class Parser {
                 (isDeclaration() || isStatement())
         ) {
             if (isDeclaration())
-                block.declarations.declarations.addAll(
-                        parseDeclarations().declarations
-                );
+            {
+                    if (isVariableDeclaration()) {
+                        while (currentToken.getKind() != DOLLAR) {
+                            block.declarations.declarationVariableAssignList.add(parseDeclarationVariableAssign());
+                            if(currentToken.getKind() != DOLLAR)
+                            {
+                               consume(COMMA);
+                            }
+                        }
+                        consume(DOLLAR);
+                    }
+
+
+
+
+            }
 
             if (isStatement())
                 block.statements.statements.addAll(
@@ -129,95 +142,78 @@ public class Parser {
         throw new RuntimeException("Only scream statement is supported for now.");
     }
 
-    private Declarations parseDeclarations() {
-        var declarations = new Declarations();
 
-        while (isDeclaration()) {
-            declarations.declarations.add(parseOneDeclaration());
+    public DeclarationVariableAssign parseDeclarationVariableAssign(){
+        var variableType = currentToken.getKind();
+        // Consume the type of variable
+        consume(variableType);
+
+        // Consume and get the identifier
+        var id = parseIdentifier();
+        // Consume the assign symbol
+        consume(ASSIGN);
+        // Consume the value
+        if (isLiteralMatchingType(variableType)) {
+            var literalExpression = parseExpression();
+
+            return new DeclarationVariableAssign(id, literalExpression);
         }
 
-        return declarations;
+        throw new RuntimeException("The identifier type " + variableType.getSpelling() + " is not matching the value type: " +  currentToken.getSpelling());
     }
 
-    private Declaration parseOneDeclaration() {
-        if (isVariableDeclaration()) {
-            var variableType = currentToken.getKind();
-            // Consume the type of variable
-            consume(variableType);
+//    public DeclarationFunctionAssign parseDeclarationFunctionAssign(){
+//        // Consume function keyword
+//        consume(FUNCTION);
+//
+//        // Consume function type
+//        var functionType = currentToken.getKind();
+//        consume(functionType);
+//
+//        // Consume function identifier
+//        var name = parseIdentifier();
+//
+//        // Consume parameters left parenthesis
+//        consume(SQUARE_LEFT_PARENTHESES);
+//
+//        Declarations parameters;
+//
+//        // Check if function has arguments
+//        if (isExpected(SQUARE_RIGHT_PARENTHESES)) parameters = new Declarations();
+//        else parameters = parseIdentifierList();
+//
+//        // Consume parameters right parenthesis
+//        consume(SQUARE_RIGHT_PARENTHESES);
+//
+//        // Consume function block left parenthesis
+//        consume(ROUND_LEFT_PARENTHESES);
+//
+//        // Consume function body
+//        var block = parseBlock();
+//
+//        consume(RETURN);
+//
+//        // Return expression
+//        var returnExpression = parseExpression();
+//
+//        // Consume semicolon
+//        consume(DOLLAR);
+//
+//        // Consume function block right parenthesis
+//        consume(ROUND_RIGHT_PARENTHESES);
+//
+//        return new DeclarationFunctionAssign(
+//                name,
+//                parameters,
+//                block,
+//                returnExpression
+//        );
 
-            // Consume and get the identifier
-            var id = parseIdentifier();
 
-            if (isExpected(ASSIGN)) {
-                // Consume the assign symbol
-                consume(ASSIGN);
+//        throw new RuntimeException("Unexpected type of declaration. Received: '" + currentToken.getKind() + "'.");
+//    }
 
-                // Consume the value
-                if (isLiteralMatchingType(variableType)) {
-                    var literalExpression = parseExpression();
 
-                    // Consume the end-of-declaration symbol
-                    consume(DOLLAR);
-
-                    return new VariableDeclaration(id, literalExpression);
-                }
-
-                throw new RuntimeException("The identifier type is not matching the value type.");
-            }
-
-            return new VariableDeclaration(id);
-        }
-
-        if (isFunctionDeclaration()) {
-            // Consume function keyword
-            consume(FUNCTION);
-
-            // Consume function type
-            var functionType = currentToken.getKind();
-            consume(functionType);
-
-            // Consume function identifier
-            var name = parseIdentifier();
-
-            // Consume parameters left parenthesis
-            consume(SQUARE_LEFT_PARENTHESES);
-
-            Declarations parameters;
-
-            // Check if function has arguments
-            if (isExpected(SQUARE_RIGHT_PARENTHESES)) parameters = new Declarations();
-            else parameters = parseIdentifierList();
-
-            // Consume parameters right parenthesis
-            consume(SQUARE_RIGHT_PARENTHESES);
-
-            // Consume function block left parenthesis
-            consume(ROUND_LEFT_PARENTHESES);
-
-            // Consume function body
-            var block = parseBlock();
-
-            consume(RETURN);
-
-            // Return expression
-            var returnExpression = parseExpression();
-
-            // Consume semicolon
-            consume(DOLLAR);
-
-            // Consume function block right parenthesis
-            consume(ROUND_RIGHT_PARENTHESES);
-
-            return new FunctionDeclaration(
-                    name,
-                    parameters,
-                    block,
-                    returnExpression
-            );
-        }
-
-        throw new RuntimeException("Unexpected type of declaration. Received: '" + currentToken.getKind() + "'.");
-    }
 
     private Identifier parseIdentifier() {
         if (isExpected(IDENTIFIER)) {
@@ -231,19 +227,19 @@ public class Parser {
         throw new RuntimeException("Identifier expected.");
     }
 
-    private Declarations parseIdentifierList() {
-        var declarations = new Declarations();
-
-        declarations.declarations.add(parseOneDeclaration());
-
-        while (isExpected(COMMA)) {
-            consume(COMMA);
-
-            declarations.declarations.add(parseOneDeclaration());
-        }
-
-        return declarations;
-    }
+//    private Declarations parseIdentifierList() {
+//        var declarations = new Declarations();
+//
+//        declarations.declarations.add(parseOneDeclaration());
+//
+//        while (isExpected(COMMA)) {
+//            consume(COMMA);
+//
+//            declarations.declarations.add(parseOneDeclaration());
+//        }
+//
+//        return declarations;
+//    }
 
     private Expression parseExpression() {
         var expression = parsePrimary();

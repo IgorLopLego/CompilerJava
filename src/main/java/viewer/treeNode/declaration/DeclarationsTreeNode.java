@@ -8,9 +8,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class DeclarationsTreeNode extends DefaultMutableTreeNode {
     public DeclarationsTreeNode(Declarations node) {
         super(node);
-
-        for (Declaration declaration: node.declarations) {
-            super.add(DeclarationTreeNode.get(declaration));
+        for(Declaration assignVariableDeclaration: node.declarationVariableAssignList)
+        {
+            super.add(DeclarationTreeNode.get(assignVariableDeclaration));
+        }
+        for (Declaration functionDeclaration: node.declarationFunctionAssignList)
+        {
+            super.add(DeclarationTreeNode.get(functionDeclaration));
         }
     }
 }

@@ -1,13 +1,13 @@
 package viewer.treeNode.declaration;
 
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.DeclarationVariableAssign;
 import viewer.treeNode.expression.ExpressionTreeNode;
 import viewer.treeNode.terminal.IdentifierTreeNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class VariableDeclarationTreeNode extends DefaultMutableTreeNode {
-    public VariableDeclarationTreeNode(VariableDeclaration node) {
+    public VariableDeclarationTreeNode(DeclarationVariableAssign node) {
         super(node);
 
         super.add(new IdentifierTreeNode(node.id));

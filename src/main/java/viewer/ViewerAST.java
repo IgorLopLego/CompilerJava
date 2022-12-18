@@ -4,8 +4,8 @@ import parser.node.Block;
 import parser.node.Node;
 import parser.node.Program;
 import parser.node.declaration.Declarations;
-import parser.node.declaration.FunctionDeclaration;
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.DeclarationFunctionAssign;
+import parser.node.declaration.DeclarationVariableAssign;
 import parser.node.expression.*;
 import parser.node.statement.IfStatement;
 import parser.node.statement.ScreamStatement;
@@ -79,8 +79,8 @@ public class ViewerAST extends JFrame {
             return new DeclarationsTreeNode(declarations);
         }
 
-        if (node instanceof FunctionDeclaration functionDeclaration) {
-            return new FunctionDeclarationTreeNode(functionDeclaration);
+        if (node instanceof DeclarationFunctionAssign declareFunctionAssign) {
+            return new FunctionDeclarationTreeNode(declareFunctionAssign);
         }
 
         if (node instanceof Identifier identifier) {
@@ -123,8 +123,8 @@ public class ViewerAST extends JFrame {
             return new StringLiteralExpressionTreeNode(stringLiteralExpression);
         }
 
-        if (node instanceof VariableDeclaration variableDeclaration) {
-            return new VariableDeclarationTreeNode(variableDeclaration);
+        if (node instanceof DeclarationVariableAssign declarationVariableAssign) {
+            return new VariableDeclarationTreeNode(declarationVariableAssign);
         }
 
         if (node instanceof VariableExpression variableDeclaration) {

@@ -1,6 +1,6 @@
 package viewer.treeNode.declaration;
 
-import parser.node.declaration.FunctionDeclaration;
+import parser.node.declaration.DeclarationFunctionAssign;
 import viewer.treeNode.BlockTreeNode;
 import viewer.treeNode.expression.ExpressionTreeNode;
 import viewer.treeNode.terminal.IdentifierTreeNode;
@@ -8,7 +8,7 @@ import viewer.treeNode.terminal.IdentifierTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class FunctionDeclarationTreeNode extends DefaultMutableTreeNode {
-    public FunctionDeclarationTreeNode(FunctionDeclaration node) {
+    public FunctionDeclarationTreeNode(DeclarationFunctionAssign node) {
         super(node);
 
         super.add(new IdentifierTreeNode(node.name));
