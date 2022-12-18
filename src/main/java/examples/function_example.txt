@@ -1,0 +1,8 @@
+start
+exeFunc void igorsFunc[number igorek, boolean nikita]
+(
+boolean negativeIgor # true $
+scream[`AAAAAA`]$
+<- $
+) $
+end

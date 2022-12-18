@@ -3,7 +3,9 @@ package viewer.treeNode.declaration;
 import parser.node.declaration.DeclarationFunctionAssign;
 import viewer.treeNode.BlockTreeNode;
 import viewer.treeNode.expression.ExpressionTreeNode;
+import viewer.treeNode.terminal.FunctionParameterTreeNode;
 import viewer.treeNode.terminal.IdentifierTreeNode;
+import viewer.treeNode.terminal.ReturnTypeFunction;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -12,8 +14,9 @@ public class FunctionDeclarationTreeNode extends DefaultMutableTreeNode {
         super(node);
 
         super.add(new IdentifierTreeNode(node.name));
-        super.add(new DeclarationsTreeNode(node.parameters));
+        super.add(new ReturnTypeFunction(node.returnType));
+        super.add(new FunctionParameterTreeNode(node.parameters));
         super.add(new BlockTreeNode(node.block));
-        super.add(ExpressionTreeNode.get(node.returnExpression));
+//        super.add(ExpressionTreeNode.get(node.returnExpression));
     }
 }

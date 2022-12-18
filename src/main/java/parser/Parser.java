@@ -3,7 +3,7 @@ package parser;
 import parser.node.Block;
 import parser.node.Node;
 import parser.node.Program;
-import parser.node.declaration.Declaration;
+import parser.node.terminal.DeclarationParameter;
 import parser.node.declaration.Declarations;
 import parser.node.declaration.DeclarationFunctionAssign;
 import parser.node.declaration.DeclarationVariableAssign;
@@ -16,6 +16,7 @@ import scanner.token.TokenKind;
 import static scanner.token.TokenKind.*;
 
 import java.util.List;
+import java.util.Vector;
 
 public class Parser {
     private Token currentToken;
@@ -61,10 +62,10 @@ public class Parser {
                         }
                         consume(DOLLAR);
                     }
-
-
-
-
+                    if(isFunctionDeclaration())
+                    {
+                        block.declarations.declarationFunctionAssignList.add(parseDeclarationFunctionAssign());
+                    }
             }
 
             if (isStatement())
@@ -162,56 +163,72 @@ public class Parser {
         throw new RuntimeException("The identifier type " + variableType.getSpelling() + " is not matching the value type: " +  currentToken.getSpelling());
     }
 
-//    public DeclarationFunctionAssign parseDeclarationFunctionAssign(){
-//        // Consume function keyword
-//        consume(FUNCTION);
-//
-//        // Consume function type
-//        var functionType = currentToken.getKind();
-//        consume(functionType);
-//
-//        // Consume function identifier
-//        var name = parseIdentifier();
-//
-//        // Consume parameters left parenthesis
-//        consume(SQUARE_LEFT_PARENTHESES);
-//
-//        Declarations parameters;
-//
-//        // Check if function has arguments
-//        if (isExpected(SQUARE_RIGHT_PARENTHESES)) parameters = new Declarations();
-//        else parameters = parseIdentifierList();
-//
-//        // Consume parameters right parenthesis
-//        consume(SQUARE_RIGHT_PARENTHESES);
-//
-//        // Consume function block left parenthesis
-//        consume(ROUND_LEFT_PARENTHESES);
-//
-//        // Consume function body
-//        var block = parseBlock();
-//
-//        consume(RETURN);
-//
-//        // Return expression
+    public DeclarationFunctionAssign parseDeclarationFunctionAssign(){
+        boolean isVoid = false;
+        // Consume function keyword
+        consume(FUNCTION);
+
+        // Consume function type
+        var functionType = currentToken;
+
+        if(functionType.getKind() == VOID)
+        {
+            isVoid = true;
+        }
+        consume(functionType.getKind());
+
+        // Consume function identifier
+        var name = parseIdentifier();
+
+        // Consume parameters left parenthesis
+        consume(SQUARE_LEFT_PARENTHESES);
+
+        Vector<DeclarationParameter> declarationParameters = new Vector<>();
+
+        // Check if function has arguments
+        if (!isExpected(SQUARE_RIGHT_PARENTHESES))
+        {
+            declarationParameters.addAll(parseFunctionParameters());
+        }
+
+        // Consume parameters right parenthesis
+        consume(SQUARE_RIGHT_PARENTHESES);
+
+        // Consume function block left parenthesis
+        consume(ROUND_LEFT_PARENTHESES);
+
+        // Consume function body
+        var block = parseBlock();
+        if(isVoid)
+        {
+            consume(RETURN);
+            consume(DOLLAR);
+            consume(ROUND_RIGHT_PARENTHESES);
+            consume(DOLLAR);
+        }
+
+
+
+        // Return expression
 //        var returnExpression = parseExpression();
-//
-//        // Consume semicolon
-//        consume(DOLLAR);
-//
-//        // Consume function block right parenthesis
-//        consume(ROUND_RIGHT_PARENTHESES);
-//
-//        return new DeclarationFunctionAssign(
-//                name,
-//                parameters,
-//                block,
+
+        // Consume semicolon
+
+
+        // Consume function block right parenthesis
+
+
+        return new DeclarationFunctionAssign(
+                name,
+                functionType.getSpelling(),
+                declarationParameters,
+                block
 //                returnExpression
-//        );
+        );
 
 
 //        throw new RuntimeException("Unexpected type of declaration. Received: '" + currentToken.getKind() + "'.");
-//    }
+    }
 
 
 
@@ -227,19 +244,27 @@ public class Parser {
         throw new RuntimeException("Identifier expected.");
     }
 
-//    private Declarations parseIdentifierList() {
-//        var declarations = new Declarations();
-//
-//        declarations.declarations.add(parseOneDeclaration());
-//
-//        while (isExpected(COMMA)) {
-//            consume(COMMA);
-//
-//            declarations.declarations.add(parseOneDeclaration());
-//        }
-//
-//        return declarations;
-//    }
+    private Vector<DeclarationParameter> parseFunctionParameters() {
+        var declarationParameters = new Vector<DeclarationParameter>();
+        while (currentToken.getKind() != SQUARE_RIGHT_PARENTHESES)
+        {
+            var parameterType = currentToken.getKind();
+            if(parameterType != TokenKind.BOOL && parameterType != TokenKind.STRING && parameterType != TokenKind.NUMBER)
+            {
+                throw new RuntimeException("Parameter of the function cannot be equal to the type: " + parameterType);
+            }
+            consume(parameterType);
+            var identifier = currentToken;
+            consume(identifier.getKind());
+            declarationParameters.add(new DeclarationParameter(new Identifier(identifier.getSpelling()), parameterType));
+            if(currentToken.getKind() != SQUARE_RIGHT_PARENTHESES)
+            {
+                consume(COMMA);
+            }
+        }
+
+        return declarationParameters;
+    }
 
     private Expression parseExpression() {
         var expression = parsePrimary();

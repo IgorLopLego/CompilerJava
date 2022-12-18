@@ -17,4 +17,5 @@ public class DeclarationsTreeNode extends DefaultMutableTreeNode {
             super.add(DeclarationTreeNode.get(functionDeclaration));
         }
     }
+
 }
