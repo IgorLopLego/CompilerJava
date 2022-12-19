@@ -4,11 +4,13 @@ import parser.node.Block;
 import parser.node.expression.Expression;
 import parser.node.terminal.Identifier;
 
+import java.util.Optional;
+
 public class FunctionDeclaration extends Declaration {
     public Identifier name;
     public Declarations parameters;
     public Block block;
-    public Expression returnExpression;
+    public Optional<Expression> returnExpression;
 
     public FunctionDeclaration(
             Identifier name,
@@ -19,7 +21,7 @@ public class FunctionDeclaration extends Declaration {
         this.name = name;
         this.parameters = parameters;
         this.block = block;
-        this.returnExpression = returnExpression;
+        this.returnExpression = Optional.ofNullable(returnExpression);
     }
 
     @Override

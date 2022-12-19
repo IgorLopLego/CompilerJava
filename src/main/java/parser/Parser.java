@@ -158,7 +158,9 @@ public class Parser {
             consume(RETURN);
 
             // Return expression
-            var returnExpression = parseExpression();
+            Expression returnExpression = null;
+
+            if (functionType != VOID) returnExpression = parseExpression();
 
             // Consume semicolon
             consume(DOLLAR);
