@@ -8,4 +8,9 @@ public class ExpressionStatement extends Statement {
     public ExpressionStatement(Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }
