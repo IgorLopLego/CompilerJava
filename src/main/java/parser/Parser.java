@@ -54,7 +54,7 @@ public class Parser {
                         parseDeclarations().declarations
                 );
 
-            if (isStatement())
+            else if (isStatement())
                 block.statements.statements.addAll(
                         parseStatements().statements
                 );
