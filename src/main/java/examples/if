@@ -1,0 +1,8 @@
+start
+
+    inCase [ true ] (
+        scream[`inCase`]$
+        number age # 1420$
+    )
+
+end

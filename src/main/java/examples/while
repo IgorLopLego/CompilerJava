@@ -1,0 +1,8 @@
+start
+
+    till [ 10 ] (
+        number age # 1420$
+        scream[`im in a infinite loop!`]$
+    )
+
+end
