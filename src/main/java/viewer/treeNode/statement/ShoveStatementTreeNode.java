@@ -8,5 +8,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class ShoveStatementTreeNode extends DefaultMutableTreeNode {
     public ShoveStatementTreeNode(ShoveStatement node) {
         super(node);
+        super.add(ExpressionTreeNode.get(node.expression));
     }
 }

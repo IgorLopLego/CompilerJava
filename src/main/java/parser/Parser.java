@@ -129,10 +129,11 @@ public class Parser {
         {
             consume(SHOVE);
             consume(SQUARE_LEFT_PARENTHESES);
+            var expression = parseExpression();
             consume(SQUARE_RIGHT_PARENTHESES);
             consume(DOLLAR);
 
-            return new ShoveStatement();
+            return new ShoveStatement(expression);
         }
 
         throw new RuntimeException("Only scream statement is supported for now.");
