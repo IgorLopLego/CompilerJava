@@ -3,10 +3,7 @@ package parser;
 import parser.node.Block;
 import parser.node.Node;
 import parser.node.Program;
-import parser.node.declaration.Declaration;
-import parser.node.declaration.Declarations;
-import parser.node.declaration.FunctionDeclaration;
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.*;
 import parser.node.expression.*;
 import parser.node.statement.*;
 import parser.node.terminal.*;
@@ -134,6 +131,7 @@ public class Parser {
 
         while (isDeclaration()) {
             declarations.declarations.add(parseOneDeclaration());
+            consume(DOLLAR);
         }
 
         return declarations;
@@ -155,9 +153,8 @@ public class Parser {
                 // Consume the value
                 if (isLiteralMatchingType(variableType)) {
                     var literalExpression = parseExpression();
-
                     // Consume the end-of-declaration symbol
-                    consume(DOLLAR);
+
 
                     return new VariableDeclaration(id, literalExpression);
                 }
@@ -168,7 +165,7 @@ public class Parser {
             return new VariableDeclaration(id);
         }
 
-        if (isFunctionDeclaration()) {
+        else if (isFunctionDeclaration()) {
             // Consume function keyword
             consume(FUNCTION);
 
@@ -217,6 +214,30 @@ public class Parser {
                     returnExpression
             );
         }
+        else if (isStructDeclaration())
+        {
+            // Consume struct keyword
+            consume(STRUCT);
+            // Consume function identifier
+            var name = parseIdentifier();
+            // Consume parameters left parenthesis
+            consume(SQUARE_LEFT_PARENTHESES);
+            Declarations parameters;
+
+            // Check if function has arguments
+            if (isExpected(SQUARE_RIGHT_PARENTHESES))
+            {
+                parameters = new Declarations();
+            }
+            else
+            {
+                parameters = parseIdentifierList();
+            }
+            // Consume function block right parenthesis
+            consume(SQUARE_RIGHT_PARENTHESES);
+
+            return new StructDeclaration(name, parameters);
+        }
 
         throw new RuntimeException("Unexpected type of declaration. Received: '" + currentToken.getKind() + "'.");
     }
@@ -239,8 +260,8 @@ public class Parser {
         declarations.declarations.add(parseOneDeclaration());
 
         while (isExpected(COMMA)) {
-            consume(COMMA);
 
+            consume(COMMA);
             declarations.declarations.add(parseOneDeclaration());
         }
 
@@ -370,7 +391,12 @@ public class Parser {
 
     private boolean isDeclaration() {
         return isVariableDeclaration() ||
-                isFunctionDeclaration();
+                isFunctionDeclaration() ||
+                isStructDeclaration();
+    }
+
+    private boolean isStructDeclaration() {
+        return isExpected(STRUCT);
     }
 
     private boolean isFunctionDeclaration() {
