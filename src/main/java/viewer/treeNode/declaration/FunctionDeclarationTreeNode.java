@@ -14,6 +14,9 @@ public class FunctionDeclarationTreeNode extends DefaultMutableTreeNode {
         super.add(new IdentifierTreeNode(node.name));
         super.add(new DeclarationsTreeNode(node.parameters));
         super.add(new BlockTreeNode(node.block));
-        super.add(ExpressionTreeNode.get(node.returnExpression));
+
+        node.returnExpression.ifPresent(returnExpression -> super.add(
+                ExpressionTreeNode.get(returnExpression)
+        ));
     }
 }
