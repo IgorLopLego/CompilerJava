@@ -63,8 +63,10 @@ public class Parser {
     private Statements parseStatements() {
         var statements = new Statements();
 
-        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF) || isExpected(WHILE) || isExpected(IDENTIFIER))
+        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF) || isExpected(WHILE) || isExpected(SHOVE) || isExpected(IDENTIFIER))
+        {
             statements.statements.add(parseOneStatement());
+        }
 
         if (statements.statements.isEmpty())
             throw new RuntimeException("Cannot parse the '" + currentToken.getKind() + "' token.");
@@ -139,6 +141,17 @@ public class Parser {
                             binaryExpression
                     )
             );
+        }
+
+        if(isExpected(SHOVE))
+        {
+            consume(SHOVE);
+            consume(SQUARE_LEFT_PARENTHESES);
+            var expression = parseExpression();
+            consume(SQUARE_RIGHT_PARENTHESES);
+            consume(DOLLAR);
+
+            return new ShoveStatement(expression);
         }
 
         throw new RuntimeException("Only scream statement is supported for now.");

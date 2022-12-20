@@ -22,6 +22,11 @@ public class StatementTreeNode {
             return new ExpressionStatementTreeNode(statement);
         }
 
+        if (node instanceof ShoveStatement statement)
+        {
+            return new ShoveStatementTreeNode(statement);
+        }
+
         throw new RuntimeException("Unexpected node: " + node);
     }
 }

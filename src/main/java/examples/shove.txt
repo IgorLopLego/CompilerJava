@@ -1,0 +1,4 @@
+start
+shove[`Input Igor's name` ] $
+shove[`Inout Igor's age`] $
+end
