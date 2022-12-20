@@ -1,0 +1,8 @@
+start
+
+    number first # 1 $
+    first # 2 $
+
+    number sum # 1 add first $
+
+end
