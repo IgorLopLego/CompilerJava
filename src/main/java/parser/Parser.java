@@ -63,8 +63,10 @@ public class Parser {
     private Statements parseStatements() {
         var statements = new Statements();
 
-        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF) || isExpected(WHILE))
+        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF) || isExpected(WHILE) || isExpected(SHOVE))
+        {
             statements.statements.add(parseOneStatement());
+        }
 
         if (statements.statements.isEmpty())
             throw new RuntimeException("Cannot parse the '" + currentToken.getKind() + "' token.");
@@ -121,6 +123,16 @@ public class Parser {
             consume(ROUND_RIGHT_PARENTHESES);
 
             return new WhileStatement(expression, block);
+        }
+
+        if(isExpected(SHOVE))
+        {
+            consume(SHOVE);
+            consume(SQUARE_LEFT_PARENTHESES);
+            consume(SQUARE_RIGHT_PARENTHESES);
+            consume(DOLLAR);
+
+            return new ShoveStatement();
         }
 
         throw new RuntimeException("Only scream statement is supported for now.");
