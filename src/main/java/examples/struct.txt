@@ -1,0 +1,8 @@
+start
+struct structIgor
+[
+number i # 8,
+string lit # `literal`,
+boolean b1 # true
+]$
+end
