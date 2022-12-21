@@ -1,8 +1,16 @@
 package parser.node.terminal;
 
-public class IntegerLiteral extends Terminal {
+import parser.interfaces.Visitable;
+import viewer.Visitor;
+
+public class IntegerLiteral extends Terminal implements Visitable {
     public IntegerLiteral(String spelling) {
         this.spelling = spelling;
+    }
+
+    @Override
+    public Object accept(Visitor visitor, Object arguments) {
+        return visitor.visit(this, arguments);
     }
 
     @Override

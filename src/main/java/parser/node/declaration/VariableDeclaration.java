@@ -2,6 +2,7 @@ package parser.node.declaration;
 
 import parser.node.expression.Expression;
 import parser.node.terminal.Identifier;
+import viewer.Visitor;
 
 import java.util.Optional;
 
@@ -20,7 +21,17 @@ public class VariableDeclaration extends Declaration {
     }
 
     @Override
+    public Object accept(Visitor visitor, Object arguments) {
+        return visitor.visit(this, arguments);
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public String getHashCode() {
+        return super.toString();
     }
 }

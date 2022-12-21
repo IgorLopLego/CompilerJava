@@ -1,3 +1,4 @@
+import checker.CheckerVisitor;
 import parser.Parser;
 import scanner.Scanner;
 import utils.Source;
@@ -23,6 +24,8 @@ public class Main {
             var programNode = parser.parse(tokens);
 
             new ViewerAST(programNode);
+
+            new CheckerVisitor();
         } else {
             System.out.println("No file was selected. The program will close.");
         }
