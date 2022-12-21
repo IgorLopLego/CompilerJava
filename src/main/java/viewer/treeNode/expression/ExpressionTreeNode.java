@@ -22,6 +22,10 @@ public class ExpressionTreeNode {
             return new StringLiteralExpressionTreeNode(expression);
         }
 
+        if (node instanceof VariableExpression expression) {
+            return new VariableExpressionTreeNode(expression);
+        }
+
         throw new RuntimeException("Unexpected node: " + node);
     }
 }
