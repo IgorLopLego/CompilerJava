@@ -1,5 +1,6 @@
 package checker;
 
+import exception.SemanticError;
 import parser.node.Block;
 import parser.node.Program;
 import parser.node.declaration.Declarations;
@@ -7,6 +8,7 @@ import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.StructDeclaration;
 import parser.node.declaration.VariableDeclaration;
 import parser.node.expression.IntegerLiteralExpression;
+import parser.node.expression.VariableExpression;
 import parser.node.statement.Statements;
 import parser.node.terminal.Identifier;
 import parser.node.terminal.IntegerLiteral;
@@ -19,6 +21,10 @@ public class CheckerVisitor implements Visitor {
 
     public CheckerVisitor() {
         identificationTable = new IdentificationTable();
+    }
+
+    private String getHashCode(Object object) {
+        return object.getClass().getName()+"@"+Integer.toHexString(object.hashCode());
     }
 
     public void check(Program program) {
@@ -61,6 +67,24 @@ public class CheckerVisitor implements Visitor {
 
     @Override
     public Optional<Object> visit(FunctionDeclaration functionDeclaration, Object arguments) {
+        var identifierSpelling = (Optional<String>) functionDeclaration.name.accept(this, null);
+        var id = identifierSpelling.get();
+
+        identificationTable.enter(id, functionDeclaration);
+        identificationTable.openScope();
+
+        if (functionDeclaration.parameters.declarations.isEmpty()) {
+            functionDeclaration.parameters.accept(this, null);
+        }
+
+        functionDeclaration.block.accept(this, null);
+
+        if (functionDeclaration.returnExpression.isPresent()) {
+            functionDeclaration.returnExpression.get().accept(this, null);
+        }
+
+        identificationTable.popScope();
+
         return Optional.empty();
     }
 
@@ -71,8 +95,8 @@ public class CheckerVisitor implements Visitor {
 
     @Override
     public Optional<Object> visit(VariableDeclaration variableDeclaration, Object arguments) {
-        var declaration = (VariableDeclaration) variableDeclaration.id.accept(this, null);
-        var id = declaration.getHashCode();
+        var identifierSpelling = (Optional<String>) variableDeclaration.id.accept(this, null);
+        var id = identifierSpelling.get();
 
         identificationTable.enter(id, variableDeclaration);
 
@@ -81,7 +105,7 @@ public class CheckerVisitor implements Visitor {
 
     @Override
     public Optional<Object> visit(IntegerLiteralExpression integerLiteralExpression, Object arguments) {
-        integerLiteralExpression.accept(this, null);
+        integerLiteralExpression.literal.accept(this, null);
 
         return Optional.of(new Type(true));
     }
@@ -94,5 +118,25 @@ public class CheckerVisitor implements Visitor {
     @Override
     public Optional<Object> visit(Identifier identifier, Object arguments) {
         return Optional.of(identifier.spelling);
+    }
+
+    @Override
+    public Optional<Object> visit(VariableExpression variableExpression, Object arguments) {
+        var identifierSpelling = (Optional<String>) variableExpression.name.accept(this, null);
+        var id = identifierSpelling.get();
+
+        var declaration = identificationTable.retrieve(id);
+
+        if (declaration.isEmpty()) {
+            throw new SemanticError("Id of: " + id + " - was not declared.");
+        }
+
+        if (!(declaration.get() instanceof VariableDeclaration)) {
+            throw new SemanticError("Id of: " + id + "  -is not a variable.");
+        }
+
+        variableExpression.declaration = (VariableDeclaration) declaration.get();
+
+        return Optional.of(new Type(false));
     }
 }

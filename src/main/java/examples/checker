@@ -1,0 +1,13 @@
+start
+
+    number n # 5 $
+
+    exeFunc number functionName[] (
+        number a # 10 $
+
+        <- 2 $
+    )$
+
+    | number n # 10 $
+
+end

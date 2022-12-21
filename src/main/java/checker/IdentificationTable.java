@@ -11,25 +11,25 @@ public class IdentificationTable {
     private int level = 0;
 
     public IdentificationTable() {
-        table = new Vector<IdEntry>();
+        table = new Vector<>();
     }
 
     public void enter(String id, Declaration attribute) {
         var entry = find(id);
 
         if (entry.isPresent() && entry.get().level == level) {
-            throw new SemanticError("Id: " + id + ", is declared twice.");
+            throw new SemanticError("Id of: " + id + " - is declared twice.");
         }
 
         table.add(new IdEntry(level, id, attribute));
     }
 
-    public Declaration retrieve(String id) {
+    public Optional<Declaration> retrieve(String id) {
         var entry = find(id);
 
-        if (entry.isPresent()) return entry.get().attribute;
+        if (entry.isPresent()) return Optional.of(entry.get().attribute);
 
-        throw new SemanticError("Id: " + id + ", was not declared.");
+        return Optional.empty();
     }
 
     public void openScope() {

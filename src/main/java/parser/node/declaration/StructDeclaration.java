@@ -21,9 +21,4 @@ public class StructDeclaration extends Declaration {
     public String toString() {
         return getClass().getSimpleName();
     }
-
-    @Override
-    public String getHashCode() {
-        return super.toString();
-    }
 }

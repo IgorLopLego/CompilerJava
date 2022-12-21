@@ -4,11 +4,7 @@ start
         string stringParameter,
         number numberParameter
     ] (
-        number currentYear # 2022 $
-
-        scream[`hi`] $
-
         <- $
-    )
+    )$
 
 end
