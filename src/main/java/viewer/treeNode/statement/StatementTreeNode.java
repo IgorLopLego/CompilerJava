@@ -18,6 +18,10 @@ public class StatementTreeNode {
             return new WhileStatementTreeNode(statement);
         }
 
+        if (node instanceof ExpressionStatement statement) {
+            return new ExpressionStatementTreeNode(statement);
+        }
+
         if (node instanceof ShoveStatement statement)
         {
             return new ShoveStatementTreeNode(statement);

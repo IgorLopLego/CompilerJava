@@ -63,7 +63,7 @@ public class Parser {
     private Statements parseStatements() {
         var statements = new Statements();
 
-        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF) || isExpected(WHILE) || isExpected(SHOVE))
+        while (isExpected(SQUARE_LEFT_PARENTHESES) || isExpected(SCREAM) || isExpected(IF) || isExpected(WHILE) || isExpected(SHOVE) || isExpected(IDENTIFIER))
         {
             statements.statements.add(parseOneStatement());
         }
@@ -123,6 +123,24 @@ public class Parser {
             consume(ROUND_RIGHT_PARENTHESES);
 
             return new WhileStatement(expression, block);
+        }
+
+        if (isExpected(IDENTIFIER)) {
+            var variable = new VariableExpression(parseIdentifier());
+
+            consume(ASSIGN);
+
+            var binaryExpression = parseExpression();
+
+            consume(DOLLAR);
+
+            return new ExpressionStatement(
+                    new BinaryExpression(
+                            new Operator(ASSIGN.getSpelling()),
+                            variable,
+                            binaryExpression
+                    )
+            );
         }
 
         if(isExpected(SHOVE))
