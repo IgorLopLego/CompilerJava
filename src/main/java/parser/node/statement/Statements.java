@@ -1,7 +1,7 @@
 package parser.node.statement;
 
-import parser.node.Node;
 import parser.interfaces.Visitable;
+import parser.node.Node;
 import viewer.Visitor;
 
 import java.util.Vector;

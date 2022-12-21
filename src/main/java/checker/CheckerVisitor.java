@@ -7,14 +7,19 @@ import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.StructDeclaration;
 import parser.node.declaration.VariableDeclaration;
+import parser.node.expression.BinaryExpression;
 import parser.node.expression.IntegerLiteralExpression;
 import parser.node.expression.VariableExpression;
+import parser.node.statement.ExpressionStatement;
 import parser.node.statement.Statements;
 import parser.node.terminal.Identifier;
 import parser.node.terminal.IntegerLiteral;
+import parser.node.terminal.Operator;
 import viewer.Visitor;
 
 import java.util.Optional;
+
+import static scanner.token.TokenKind.ASSIGN;
 
 public class CheckerVisitor implements Visitor {
     private final IdentificationTable identificationTable;
@@ -62,6 +67,10 @@ public class CheckerVisitor implements Visitor {
 
     @Override
     public Optional<Object> visit(Statements statements, Object arguments) {
+        for (var statement : statements.statements) {
+            statement.accept(this, null);
+        }
+
         return Optional.empty();
     }
 
@@ -128,15 +137,41 @@ public class CheckerVisitor implements Visitor {
         var declaration = identificationTable.retrieve(id);
 
         if (declaration.isEmpty()) {
-            throw new SemanticError("Id of: " + id + " - was not declared.");
+            throw new SemanticError("Id of '" + id + "' was not declared.");
         }
 
         if (!(declaration.get() instanceof VariableDeclaration)) {
-            throw new SemanticError("Id of: " + id + "  -is not a variable.");
+            throw new SemanticError("Id of '" + id + "' is not a variable.");
         }
 
         variableExpression.declaration = (VariableDeclaration) declaration.get();
 
         return Optional.of(new Type(false));
+    }
+
+    @Override
+    public Optional<Object> visit(BinaryExpression binaryExpression, Object arguments) {
+        var leftType = (Optional<Type>) binaryExpression.leftOperand.accept(this, null);
+        var rightType = (Optional<Type>) binaryExpression.rightOperand.accept(this, null);
+
+        var operator = (Optional<Operator>) binaryExpression.operator.accept(this, null);
+
+        if (operator.equals(ASSIGN) && leftType.get().isReadOnly) {
+            throw new SemanticError("Left-hand side of assignment (#) must be a variable.");
+        }
+
+        return Optional.of(new Type(true));
+    }
+
+    @Override
+    public Optional<Object> visit(Operator operator, Object arguments) {
+        return Optional.of(operator.spelling);
+    }
+
+    @Override
+    public Optional<Object> visit(ExpressionStatement expressionStatement, Object arguments) {
+        expressionStatement.expression.accept(this, null);
+
+        return Optional.empty();
     }
 }

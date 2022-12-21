@@ -1,10 +1,8 @@
 package parser.node.terminal;
 
-import parser.interfaces.HashCode;
-import parser.interfaces.Visitable;
 import viewer.Visitor;
 
-public class Identifier extends Terminal implements HashCode, Visitable {
+public class Identifier extends Terminal{
     public Identifier(String spelling) {
         this.spelling = spelling;
     }
@@ -17,10 +15,5 @@ public class Identifier extends Terminal implements HashCode, Visitable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " " + spelling;
-    }
-
-    @Override
-    public String getHashCode() {
-        return super.toString();
     }
 }

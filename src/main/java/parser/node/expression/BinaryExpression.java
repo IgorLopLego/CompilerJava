@@ -21,6 +21,6 @@ public class BinaryExpression extends Expression {
 
     @Override
     public Object accept(Visitor visitor, Object arguments) {
-        return null;
+        return visitor.visit(this, null);
     }
 }

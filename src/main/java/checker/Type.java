@@ -1,9 +1,9 @@
 package checker;
 
 public class Type {
-    public boolean rvalueOnly;
+    public boolean isReadOnly;
 
-    public Type(boolean rvalueOnly) {
-        this.rvalueOnly = rvalueOnly;
+    public Type(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
     }
 }
