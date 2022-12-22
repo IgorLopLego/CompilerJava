@@ -6,14 +6,10 @@ import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.StructDeclaration;
 import parser.node.declaration.VariableDeclaration;
-import parser.node.expression.BinaryExpression;
-import parser.node.expression.IntegerLiteralExpression;
-import parser.node.expression.VariableExpression;
+import parser.node.expression.*;
 import parser.node.statement.ExpressionStatement;
 import parser.node.statement.Statements;
-import parser.node.terminal.Identifier;
-import parser.node.terminal.IntegerLiteral;
-import parser.node.terminal.Operator;
+import parser.node.terminal.*;
 
 import java.util.Optional;
 
@@ -35,6 +31,14 @@ public interface Visitor {
     Optional<Object> visit(IntegerLiteralExpression integerLiteralExpression, Object arguments);
 
     Optional<Object> visit(IntegerLiteral integerLiteral, Object arguments);
+
+    Optional<Object> visit(StringLiteralExpression stringLiteralExpression, Object arguments);
+
+    Optional<Object> visit(StringLiteral stringLiteral, Object arguments);
+
+    Optional<Object> visit(BooleanLiteralExpression booleanLiteralExpression, Object arguments);
+
+    Optional<Object> visit(BooleanLiteral booleanLiteral, Object arguments);
 
     Optional<Object> visit(Identifier identifier, Object arguments);
 

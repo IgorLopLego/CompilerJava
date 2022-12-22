@@ -7,14 +7,10 @@ import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.StructDeclaration;
 import parser.node.declaration.VariableDeclaration;
-import parser.node.expression.BinaryExpression;
-import parser.node.expression.IntegerLiteralExpression;
-import parser.node.expression.VariableExpression;
+import parser.node.expression.*;
 import parser.node.statement.ExpressionStatement;
 import parser.node.statement.Statements;
-import parser.node.terminal.Identifier;
-import parser.node.terminal.IntegerLiteral;
-import parser.node.terminal.Operator;
+import parser.node.terminal.*;
 import viewer.Visitor;
 
 import java.util.Optional;
@@ -105,6 +101,9 @@ public class CheckerVisitor implements Visitor {
     @Override
     public Optional<Object> visit(VariableDeclaration variableDeclaration, Object arguments) {
         var identifierSpelling = (Optional<String>) variableDeclaration.id.accept(this, null);
+
+        variableDeclaration.expression.get().accept(this, null);
+
         var id = identifierSpelling.get();
 
         identificationTable.enter(id, variableDeclaration);
@@ -121,6 +120,30 @@ public class CheckerVisitor implements Visitor {
 
     @Override
     public Optional<Object> visit(IntegerLiteral integerLiteral, Object arguments) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Object> visit(StringLiteralExpression stringLiteralExpression, Object arguments) {
+        stringLiteralExpression.literal.accept(this, null);
+
+        return Optional.of(new Type(true));
+    }
+
+    @Override
+    public Optional<Object> visit(StringLiteral stringLiteral, Object arguments) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Object> visit(BooleanLiteralExpression booleanLiteralExpression, Object arguments) {
+        booleanLiteralExpression.literal.accept(this, null);
+
+        return Optional.of(new Type(true));
+    }
+
+    @Override
+    public Optional<Object> visit(BooleanLiteral booleanLiteral, Object arguments) {
         return Optional.empty();
     }
 
@@ -158,6 +181,31 @@ public class CheckerVisitor implements Visitor {
 
         if (operator.equals(ASSIGN) && leftType.get().isReadOnly) {
             throw new SemanticError("Left-hand side of assignment (#) must be a variable.");
+        }
+
+        // Check for integers
+        if (binaryExpression.leftOperand instanceof IntegerLiteralExpression) {
+            if (!(binaryExpression.rightOperand instanceof IntegerLiteralExpression)) {
+                throw new SemanticError(
+                        "Cannot execute the '" + binaryExpression.operator.spelling + "' operator between a integer and non integer types."
+                );
+            }
+        } else if (binaryExpression.leftOperand instanceof StringLiteralExpression) {
+            if (!(binaryExpression.rightOperand instanceof StringLiteralExpression)) {
+                throw new SemanticError(
+                        "Cannot execute the '" + binaryExpression.operator.spelling + "' operator between a string and non string types."
+                );
+            }
+
+            if (!binaryExpression.operator.spelling.equals("add")) {
+                throw new SemanticError(
+                        "Cannot execute the '" + binaryExpression.operator.spelling + "' between string types."
+                );
+            }
+        } else if (binaryExpression.leftOperand instanceof BooleanLiteralExpression) {
+            throw new SemanticError(
+                    "Boolean type operations are not supported."
+            );
         }
 
         return Optional.of(new Type(true));

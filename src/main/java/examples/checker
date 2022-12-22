@@ -1,9 +1,8 @@
 start
-    c # 10 add 1 $
-    number n # 5 $
+    boolean c # true $
+    c # true add true $
 
     exeFunc number functionName[] (
-        a # 10 add 1 $
         number b # 10 $
 
         <- 2 $
