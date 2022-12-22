@@ -6,7 +6,8 @@ import parser.node.Program;
 import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.StructDeclaration;
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.variable.VariableDeclaration;
+import parser.node.declaration.variable.VariableType;
 import parser.node.expression.*;
 import parser.node.statement.ExpressionStatement;
 import parser.node.statement.Statements;
@@ -101,10 +102,21 @@ public class CheckerVisitor implements Visitor {
     @Override
     public Optional<Object> visit(VariableDeclaration variableDeclaration, Object arguments) {
         var identifierSpelling = (Optional<String>) variableDeclaration.id.accept(this, null);
-
-        variableDeclaration.expression.get().accept(this, null);
-
         var id = identifierSpelling.get();
+
+        var expression = (Optional<Expression>) variableDeclaration.expression.get().accept(this, null);
+
+        if (variableDeclaration.type == VariableType.INTEGER) {
+            if (variableDeclaration.expression.get() instanceof BinaryExpression) {
+                var binaryExpression = (BinaryExpression) variableDeclaration.expression.get();
+
+                if (binaryExpression.leftOperand instanceof IntegerLiteralExpression) {
+                    throw new SemanticError("Cannot assign non integer to the number variable type.");
+                }
+            } else if (!(variableDeclaration.expression.get() instanceof IntegerLiteralExpression)) {
+                throw new SemanticError("Cannot assign non integer to the number variable type.");
+            }
+        }
 
         identificationTable.enter(id, variableDeclaration);
 
@@ -179,9 +191,26 @@ public class CheckerVisitor implements Visitor {
 
         var operator = (Optional<Operator>) binaryExpression.operator.accept(this, null);
 
-        if (operator.equals(ASSIGN) && leftType.get().isReadOnly) {
-            throw new SemanticError("Left-hand side of assignment (#) must be a variable.");
-        }
+        if (operator.get().equals(ASSIGN)) {
+            if (leftType.get().isReadOnly) {
+                throw new SemanticError("Left-hand side of assignment (#) must be a variable.");
+
+            }
+
+            var variableAssignment = (VariableExpression) binaryExpression.leftOperand;
+
+            if (variableAssignment.declaration.type == VariableType.INTEGER) {
+                if (variableAssignment.declaration.expression.get() instanceof BinaryExpression) {
+                    var variableExpression = (BinaryExpression) variableAssignment.declaration.expression.get();
+
+                    if (binaryExpression.leftOperand instanceof IntegerLiteralExpression) {
+                        throw new SemanticError("Cannot assign non integer to the number variable type.");
+                    }
+                } else if (!(variableAssignment.declaration.expression.get() instanceof IntegerLiteralExpression)) {
+                    throw new SemanticError("Cannot assign non integer to the number variable type.");
+                }
+                }
+            }
 
         // Check for integers
         if (binaryExpression.leftOperand instanceof IntegerLiteralExpression) {

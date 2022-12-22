@@ -1,6 +1,6 @@
 package parser.node.expression;
 
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.variable.VariableDeclaration;
 import parser.node.terminal.Identifier;
 import viewer.Visitor;
 

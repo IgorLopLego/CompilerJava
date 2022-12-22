@@ -1,5 +1,6 @@
-package parser.node.declaration;
+package parser.node.declaration.variable;
 
+import parser.node.declaration.Declaration;
 import parser.node.expression.Expression;
 import parser.node.terminal.Identifier;
 import viewer.Visitor;
@@ -8,15 +9,12 @@ import java.util.Optional;
 
 public class VariableDeclaration extends Declaration {
     public Identifier id;
+    public VariableType type;
     public Optional<Expression> expression;
 
-    public VariableDeclaration(Identifier id) {
+    public VariableDeclaration(Identifier id, VariableType type, Expression expression) {
         this.id = id;
-        expression = Optional.empty();
-    }
-
-    public VariableDeclaration(Identifier id, Expression expression) {
-        this.id = id;
+        this.type = type;
         this.expression = Optional.ofNullable(expression);
     }
 
