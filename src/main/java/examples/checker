@@ -4,7 +4,7 @@ start
 
     exeFunc number functionName[] (
         a # 10 add 1 $
-        number a # 10 $
+        number b # 10 $
 
         <- 2 $
     )$

@@ -26,7 +26,7 @@ public class Main {
 
             new ViewerAST(programNode);
 
-            // new CheckerVisitor().check(programNode);
+            new CheckerVisitor().check(programNode);
         } else {
             System.out.println("No file was selected. The program will close.");
         }
