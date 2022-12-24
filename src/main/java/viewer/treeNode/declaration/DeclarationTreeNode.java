@@ -3,7 +3,7 @@ package viewer.treeNode.declaration;
 import parser.node.declaration.Declaration;
 import parser.node.declaration.FunctionDeclaration;
 import parser.node.declaration.StructDeclaration;
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.variable.VariableDeclaration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

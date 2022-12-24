@@ -4,6 +4,8 @@ import parser.node.Block;
 import parser.node.Node;
 import parser.node.Program;
 import parser.node.declaration.*;
+import parser.node.declaration.variable.VariableDeclaration;
+import parser.node.declaration.variable.VariableType;
 import parser.node.expression.*;
 import parser.node.statement.*;
 import parser.node.terminal.*;
@@ -177,23 +179,14 @@ public class Parser {
             // Consume and get the identifier
             var id = parseIdentifier();
 
-            if (isExpected(ASSIGN)) {
-                // Consume the assign symbol
-                consume(ASSIGN);
+            // Consume the assign symbol
+            consume(ASSIGN);
 
-                // Consume the value
-                if (isLiteralMatchingType(variableType)) {
-                    var literalExpression = parseExpression();
-                    // Consume the end-of-declaration symbol
+            // Consume the value
+            var literalExpression = parseExpression();
 
-
-                    return new VariableDeclaration(id, literalExpression);
-                }
-
-                throw new RuntimeException("The identifier type is not matching the value type.");
-            }
-
-            return new VariableDeclaration(id);
+            // Consume the end-of-declaration symbol
+            return new VariableDeclaration(id, VariableType.getType(variableType), literalExpression);
         }
 
         else if (isFunctionDeclaration()) {

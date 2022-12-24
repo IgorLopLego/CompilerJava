@@ -1,6 +1,7 @@
 package parser.node.expression;
 
 import parser.node.terminal.BooleanLiteral;
+import viewer.Visitor;
 
 public class BooleanLiteralExpression extends Expression {
     public BooleanLiteral literal;
@@ -12,5 +13,10 @@ public class BooleanLiteralExpression extends Expression {
     @Override
     public String toString() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public Object accept(Visitor visitor, Object arguments) {
+        return visitor.visit(this, null);
     }
 }

@@ -1,6 +1,6 @@
 package viewer.treeNode.declaration;
 
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.variable.VariableDeclaration;
 import viewer.treeNode.expression.ExpressionTreeNode;
 import viewer.treeNode.terminal.IdentifierTreeNode;
 

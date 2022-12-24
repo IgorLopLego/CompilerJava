@@ -1,6 +1,7 @@
 package parser.node.expression;
 
 import parser.node.terminal.Operator;
+import viewer.Visitor;
 
 public class BinaryExpression extends Expression {
     public Operator operator;
@@ -16,5 +17,10 @@ public class BinaryExpression extends Expression {
     @Override
     public String toString() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public Object accept(Visitor visitor, Object arguments) {
+        return visitor.visit(this, null);
     }
 }

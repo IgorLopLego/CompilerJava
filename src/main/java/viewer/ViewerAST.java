@@ -5,7 +5,7 @@ import parser.node.Node;
 import parser.node.Program;
 import parser.node.declaration.Declarations;
 import parser.node.declaration.FunctionDeclaration;
-import parser.node.declaration.VariableDeclaration;
+import parser.node.declaration.variable.VariableDeclaration;
 import parser.node.expression.*;
 import parser.node.statement.IfStatement;
 import parser.node.statement.ScreamStatement;

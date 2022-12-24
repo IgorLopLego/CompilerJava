@@ -2,6 +2,7 @@ package parser.node.statement;
 
 import parser.node.Block;
 import parser.node.expression.Expression;
+import viewer.Visitor;
 
 public class IfStatement extends Statement {
     public Expression expression;
@@ -21,5 +22,10 @@ public class IfStatement extends Statement {
     @Override
     public String toString() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public Object accept(Visitor visitor, Object arguments) {
+        return null;
     }
 }

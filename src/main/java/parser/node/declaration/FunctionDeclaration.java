@@ -3,6 +3,7 @@ package parser.node.declaration;
 import parser.node.Block;
 import parser.node.expression.Expression;
 import parser.node.terminal.Identifier;
+import viewer.Visitor;
 
 import java.util.Optional;
 
@@ -22,6 +23,11 @@ public class FunctionDeclaration extends Declaration {
         this.parameters = parameters;
         this.block = block;
         this.returnExpression = Optional.ofNullable(returnExpression);
+    }
+
+    @Override
+    public Object accept(Visitor visitor, Object arguments) {
+        return visitor.visit(this, arguments);
     }
 
     @Override
